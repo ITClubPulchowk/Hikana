@@ -14,8 +14,6 @@
     "discord.js": "^12.5.3",
     "dotenv": "^9.0.2",
     "edit-json-file": "^1.6.0",
-    "iconv-lite": "^0.6.3",
-    "utf8": "^3.0.0",
-    "wtf-8": "^1.0.1"
+    "iconv-lite": "^0.6.3"
   }
 }
