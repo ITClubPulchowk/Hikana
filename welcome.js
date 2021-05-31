@@ -6,7 +6,7 @@ const editJsonFile = require('edit-json-file')
 const file = editJsonFile(path.join(__dirname, '/config.json'))
 
 Canvas.registerFont(
-    path.join(__dirname,'/arial-unicode-ms.ttf'), 
+    path.join(__dirname,'/NotoSans-Regular.ttf'), 
     {
         family: 'fontfamily'
     }
