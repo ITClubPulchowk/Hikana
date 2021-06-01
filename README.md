@@ -1,6 +1,41 @@
 # Hikana  
 **The officlal bot of IT-CLUB-Pulchowk**
 
+## Usage Instruction
+### Getting Node
+#### Linux
+Make sure you have node installed.  
+If not, you can install it by following the instructions [here](https://nodejs.org/en/download/package-manager/)  
+
+#### Windows 
+You can install node from [here](https://nodejs.org/en/download/)  
+
+### Install Dependencies
+
+```
+git clone https://github.com/IT-Club-Pulchowk/Hikana.git   
+cd Hikana
+npm install  
+````
+
+### Setup .env file
+Before running the project, create a .env file and put the following in it.
+
+```
+BOT_TOKEN=<Your-bot-token>  
+PREFIX=<Your-prefered-prefix>
+```
+
+Replace \<Your-bot-token\> with bot token. If you don't have a bot token yet, you can make one [here](https://discord.com/developers/applications)   
+Replace \<Your-prefered-prefix\> with any prefix you may like. Eg:- "!", "^^", ".", etc.     
+
+### Running the application
+You can now start the bot with  
+```
+node .
+```  
+
+## About 
 Alias: Hikana  
 Hikan + a  
 Pessimistic + a  
@@ -30,8 +65,10 @@ Abilities: can live on ramen for days
 Gadgets/Tech: android + laptop  
 Mental/Emotional Weaknesses: she thinks too much about the future and always in a morbid sense. that is why she has gotten the alias hikana.  
 
-TODO
-* intro // Server intro
+###### TODO
+* No dms
+* Add instruction for windows
+* intro // Server intro (tsundere)
 * aboutme
 * permission setup
 * archive / archive catagory

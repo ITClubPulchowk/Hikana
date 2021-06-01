@@ -131,6 +131,7 @@ client.on('ready', () => {
 			data.push(
 				`\nYou can send \`${process.env.PREFIX}help [command name]\` to get info on a specific command!`
 			);
+			/*
 			message.author
 				.send(data, { split: true })
 				.then(() => {
@@ -146,6 +147,8 @@ client.on('ready', () => {
 						"it seems like I can't DM you! Do you have DMs disabled?"
 					);
 				});
+				*/
+			message.channel.send(data, { split: true });
 		} else {
 			const name = args[1].toLowerCase();
 			const command = command_list.find((element) => element.name === name);
