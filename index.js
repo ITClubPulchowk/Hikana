@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const discord = require('discord.js');
 const axios = require('axios');
+const command_list = require('./command_list.js');
 
 const editJsonFile = require('edit-json-file');
 const file = editJsonFile(path.join(__dirname, 'config.json'));
@@ -109,6 +110,62 @@ client.on('ready', () => {
 			'https://cdn.discordapp.com/attachments/744591904427081811/846292516009279529/bitch.gif'
 		);
 	});
+
+	commands(client, 'intro', (message) => {
+		// Todo for later
+		let reply = '';
+		reply += 'Welcome to IT-Club, ';
+		reply += '#get-roles';
+		message.channel.send(reply);
+	});
+
+	commands(client, 'help', (message) => {
+		let data = [];
+		const args = message.content
+			.slice(process.env.PREFIX.length)
+			.trim()
+			.split(/ +/);
+		if (args.length === 1) {
+			data.push("Here's a list of all my commands:");
+			data.push(command_list.map((command) => command.name).join(', '));
+			data.push(
+				`\nYou can send \`${process.env.PREFIX}help [command name]\` to get info on a specific command!`
+			);
+			message.author
+				.send(data, { split: true })
+				.then(() => {
+					if (message.channel.type === 'dm') return;
+					message.reply("I've sent you a DM with all my commands!");
+				})
+				.catch((error) => {
+					console.error(
+						`Could not send help DM to ${message.author.tag}.\n`,
+						error
+					);
+					message.reply(
+						"it seems like I can't DM you! Do you have DMs disabled?"
+					);
+				});
+		} else {
+			const name = args[1].toLowerCase();
+			const command = command_list.find((element) => element.name === name);
+
+			if (!command) {
+				return message.reply("that's not a valid command!");
+			}
+			data.push(`**Name:** ${command.name}`);
+			if (command.description)
+				data.push(`**Description:** ${command.description}`);
+			// if (command.usage)
+			data.push(`**Arguments** ${command.arguments}`);
+			data.push(
+				`**Usage:** ${process.env.PREFIX}${command.name} ${command.usage}`
+			);
+
+			message.channel.send(data, { split: true });
+		}
+	});
+
 	welcome(client);
 
 	commands(client, 'msg', (message) => {
