@@ -76,7 +76,7 @@ client.on('ready', () => {
 			.slice(process.env.PREFIX.length)
 			.trim()
 			.split(/ +/);
-		let word = args[1];
+		let word = args.slice(1).join(' ');
 
 		if (!word) {
 			message.channel.send(
