@@ -66,12 +66,11 @@ Gadgets/Tech: android + laptop
 Mental/Emotional Weaknesses: she thinks too much about the future and always in a morbid sense. that is why she has gotten the alias hikana.  
 
 ###### TODO
-* No dms
 * Add instruction for windows
 * intro // Server intro (tsundere)
 * aboutme
 * permission setup
 * archive / archive catagory
 * mute/ unmute
-* Nsfw react 
 * plot
+* osu

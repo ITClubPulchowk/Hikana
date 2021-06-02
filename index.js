@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const discord = require('discord.js');
 const axios = require('axios');
-const command_list = require('./command_list.js');
+const { command_list } = require('./data.js');
 
 const editJsonFile = require('edit-json-file');
 const file = editJsonFile(path.join(__dirname, 'config.json'));
@@ -77,7 +77,8 @@ client.on('ready', () => {
 			.slice(process.env.PREFIX.length)
 			.trim()
 			.split(/ +/);
-		let word = args.slice(1).join(' ');
+		args.shift();
+		let word = args.join(' ');
 
 		if (!word) {
 			message.channel.send(
@@ -167,6 +168,44 @@ client.on('ready', () => {
 
 			message.channel.send(data, { split: true });
 		}
+	});
+
+	commands(client, 'react', (message) => {
+		message.react('🔞');
+	});
+
+	commands(client, 'plot', (message) => {
+		const args = message.content
+			.slice(process.env.PREFIX.length)
+			.trim()
+			.split(/ +/);
+		args.shift();
+		let word = args.join(' ');
+		console.log(word);
+		const appID = process.env.WOLFRAM_TOKEN;
+		const input = encodeURIComponent(word);
+		const url = `http://api.wolframalpha.com/v2/query?input=${input}&appid=${appID}&output=json`;
+		axios(url).then((response) => {
+			const data = response.data;
+			let pods = data.queryresult.pods;
+			let img;
+			const found = pods.find((pod) => pod.id === 'Plot');
+			if (!found) {
+				const imp_plot = pods.find((pod) => pod.id === 'ImplicitPlot');
+				if (imp_plot) {
+					img = imp_plot.subpods[0].img.src;
+				} else {
+					message.channel.send('Please contact the bot developer');
+				}
+			} else {
+				img = found.subpods[0].img.src;
+			}
+			if (img) {
+				message.channel.send(img);
+			} else {
+				message.channel.send('There seems to be an error');
+			}
+		});
 	});
 
 	welcome(client);
