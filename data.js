@@ -52,6 +52,12 @@ let command_list = [
 		description: `Returns the author's or the specified user's avatar`,
 		arguments: 'optional',
 		usage: ''
+	},
+	{
+		name: 'mute',
+		description: 'Mutes the specified user',
+		arguments: 'required',
+		usage: '@member'
 	}
 ];
 
