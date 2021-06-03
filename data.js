@@ -36,10 +36,10 @@ let command_list = [
 		usage: '@member',
 	},
 	{
-		name: 'msg',
-		description: 'Saves message to config.js',
+		name: 'welcomeMessage',
+		description: 'Saves welcome message to config.js',
 		arguments: 'required',
-		usage: '<msg>',
+		usage: '<welcomemessage>',
 	},
 	{
 		name: 'plot',

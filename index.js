@@ -243,7 +243,7 @@ client.on('ready', () => {
 				file.append('message', args.join(' '));
 				file.save();
 		} else if(!(member.hasPermission('ADMINISTRATOR'))) {
-			message.channel.send(`<@${member.id}> You dont have sufficiet permissions for this command.`)
+			message.channel.send(`<@${member.id}> You don't have permissions for this command.`)
 		}
 	});
 });
