@@ -29,13 +29,24 @@ client.on('ready', () => {
 			member.hasPermission('ADMINISTRATOR') ||
 			member.hasPermission('BAN_MEMBERS')
 		) {
-			const target = mentions.users.first();
-			if (target) {
-				const targetMember = message.guild.members.cache.get(target.id);
-				targetMember.ban();
-				message.channel.send(`${tag} That user has been`);
-			} else {
+			const args = message.content.substring(process.env.PREFIX.length).split(' ')
+			args.shift()
+			const userToBan = args[0];
+			console.log(userToBan);
+			if (typeof(userToBan) === 'string') {
+				const target = mentions.users.first();
+				if (target) {
+					const targetMember = message.guild.members.cache.get(target.id);
+					targetMember.ban();
+					message.channel.send(`${tag} That user was banned`);
+				} else if(!target) {
+					const targetMember = message.guild.members.cache.get(userToBan)
+					targetMember.ban();
+					message.channel.send(`<@${tag}> That user was banned`);
+				} 
+			} else if(typeof(userToBan) === 'undefined') {
 				message.channel.send(`${tag} Please specify someone to ban.`);
+				
 			}
 		} else {
 			message.channel.send(
@@ -53,13 +64,24 @@ client.on('ready', () => {
 			member.hasPermission('ADMINISTRATOR') ||
 			member.hasPermission('KICK_MEMBERS')
 		) {
-			const target = mentions.users.first();
-			if (target) {
-				const targetMember = message.guild.members.cache.get(target.id);
-				targetMember.kick();
-				message.channel.send(`${tag} That user has kicked`);
-			} else {
+			const args = message.content.substring(process.env.PREFIX.length).split(' ')
+			args.shift()
+			const userToKick = args[0];
+			console.log(userToKick);
+			if (typeof(userToKick) === 'string') {
+				const target = mentions.users.first();
+				if (target) {
+					const targetMember = message.guild.members.cache.get(target.id);
+					targetMember.kick();
+					message.channel.send(`${tag} That user was kicked`);
+				} else if(!target) {
+					const targetMember = message.guild.members.cache.get(userToKick)
+					targetMember.kick();
+					message.channel.send(`<@${userToKick}> That user was kicked`);
+				} 
+			} else if(typeof(userToKick) === 'undefined') {
 				message.channel.send(`${tag} Please specify someone to kick.`);
+				
 			}
 		} else {
 			message.channel.send(
@@ -211,14 +233,18 @@ client.on('ready', () => {
 	welcome(client);
 
 	commands(client, 'msg', (message) => {
-		const args = message.content
+		const { member } = message;
+		if(member.hasPermission('ADMINISTRATOR')){
+			const args = message.content
 			.substring(process.env.PREFIX.length)
 			.split(' ');
-		args.shift();
-		file.pop('message');
-		file.append('message', args.join(' '));
-		file.save();
-		console.log(file.get());
+				args.shift()
+				file.pop('message');
+				file.append('message', args.join(' '));
+				file.save();
+		} else if(!(member.hasPermission('ADMINISTRATOR'))) {
+			message.channel.send(`<@${member.id}> You dont have sufficiet permissions for this command.`)
+		}
 	});
 });
 
