@@ -47,9 +47,15 @@ let command_list = [
 		arguments: 'required',
 		usage: '<equation>',
 	},
+	{
+		name: 'avatar',
+		description: `Returns the author's or the specified user's avatar`,
+		arguments: 'optional',
+		usage: ''
+	}
 ];
 
-nsfw_words = ['fuck', 'shit'];
+nsfw_words = ['fuck', 'porn', 'pornography'];
 nsfw_words = nsfw_words.join('|');
 nsfw_words = '(' + nsfw_words + ')';
 

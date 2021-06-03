@@ -183,7 +183,7 @@ client.on('ready', () => {
 			if (command.description)
 				data.push(`**Description:** ${command.description}`);
 			// if (command.usage)
-			data.push(`**Arguments** ${command.arguments}`);
+			data.push(`**Arguments:** ${command.arguments}`);
 			data.push(
 				`**Usage:** ${process.env.PREFIX}${command.name} ${command.usage}`
 			);
@@ -232,7 +232,7 @@ client.on('ready', () => {
 
 	welcome(client);
 
-	commands(client, 'msg', (message) => {
+	commands(client, 'welcomeMessage', (message) => {
 		const { member } = message;
 		if(member.hasPermission('ADMINISTRATOR')){
 			const args = message.content
@@ -246,6 +246,58 @@ client.on('ready', () => {
 			message.channel.send(`<@${member.id}> You don't have permissions for this command.`)
 		}
 	});
+
+	commands(client, 'avatar', (message) => {
+	
+	const { member, mentions } = message;
+
+	const tag = `<@${member.id}>`;
+
+	const embed = new discord.MessageEmbed()
+		
+	const args = message.content.substring(process.env.PREFIX.length).split(' ')
+	args.shift()
+	const userAvatar = args[0];
+	if (typeof(userAvatar) === 'string') {
+		const target = mentions.users.first();
+		if (target) {
+			const targetMember = message.guild.members.cache.get(target.id);
+			embed.setTitle("I fetched the display picture you requested. Here,")
+			.setImage(targetMember.user.displayAvatarURL({
+				format: 'png',
+				size: 1024
+			}))
+			.setColor(`RANDOM`)
+			.setAuthor('Hikana', 'https://i.imgur.com/TAKFpVd.png', 'https://github.com/IT-Club-Pulchowk/Hikana/')
+			message.channel.send(embed);
+		} else if(!target) {
+				const targetMember = message.guild.members.cache.get(userAvatar)
+				if(targetMember){
+					embed.setTitle("I fetched the display picture you requested. Here,")
+					.setImage(targetMember.user.displayAvatarURL({
+						format: 'png',
+						size: 1024
+					}))
+					.setColor(`RANDOM`)
+					.setAuthor('Hikana', 'https://i.imgur.com/TAKFpVd.png', 'https://github.com/IT-Club-Pulchowk/Hikana/')
+					message.channel.send(embed);
+				} else {
+					message.channel.send(`${tag} Please specify a valid user-id.`)
+				}
+				
+			} 
+		} else if(typeof(userToKick) === 'undefined') {
+			embed.setTitle("I fetched the display picture you requested. Here,")
+			.setImage(message.author.displayAvatarURL({
+				format: 'png',
+				size: 1024
+			}))
+			.setColor(`RANDOM`)
+			.setAuthor('Hikana', 'https://i.imgur.com/TAKFpVd.png', 'https://github.com/IT-Club-Pulchowk/Hikana/')
+			message.channel.send(embed);	
+		}
+		
+	})
 });
 
 client.login(process.env.BOT_TOKEN);
