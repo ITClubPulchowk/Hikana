@@ -53,6 +53,12 @@ let command_list = [
 		arguments: 'optional',
 		usage: '',
 	},
+	{
+		name: 'q',
+		description: 'Sends a message to the question channel',
+		arguments: 'required',
+		usage: '<question>',
+	},
 ];
 
 nsfw_words = ['fuck', 'porn', 'pornography'];

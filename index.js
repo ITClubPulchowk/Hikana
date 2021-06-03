@@ -233,6 +233,32 @@ client.on('ready', () => {
 		message.channel.send(msg);
 	});
 
+	commands(client, 'q', (message) => {
+		const author = { id: message.author.id, name: message.author.username };
+		const question = message.content.slice(2);
+		if (!question) {
+			return;
+		}
+		const embed = new discord.MessageEmbed();
+		embed
+			.setTitle(`${author.name}`)
+			.setColor(`RANDOM`)
+			.setDescription(question);
+		const questionChannel = process.env.Q_CHANNEL;
+		if (questionChannel) {
+			client.channels.cache.get(questionChannel).send(embed);
+			message.react('👌');
+		} else {
+			message.reply(
+				'There seems to be a problem, can you dm a instructor or a volunteers'
+			);
+		}
+	});
+
+	commands(client, 'notice', (message) => {
+		message.channel.send('some mmsg');
+	});
+
 	welcome(client);
 
 	commands(client, 'welcomeMessage', (message) => {
