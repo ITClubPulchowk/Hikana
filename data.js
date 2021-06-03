@@ -59,6 +59,12 @@ let command_list = [
 		arguments: 'required',
 		usage: '<question>',
 	},
+	{
+		name: 'mute',
+		description: 'Mutes the specified user',
+		arguments: 'required',
+		usage: '@member',
+	},
 ];
 
 nsfw_words = ['fuck', 'porn', 'pornography'];
