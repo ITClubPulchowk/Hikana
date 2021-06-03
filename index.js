@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const discord = require('discord.js');
 const axios = require('axios');
-const { command_list } = require('./data.js');
+const { command_list, aboutme } = require('./data.js');
 
 const editJsonFile = require('edit-json-file');
 const file = editJsonFile(path.join(__dirname, 'config.json'));
@@ -29,24 +29,25 @@ client.on('ready', () => {
 			member.hasPermission('ADMINISTRATOR') ||
 			member.hasPermission('BAN_MEMBERS')
 		) {
-			const args = message.content.substring(process.env.PREFIX.length).split(' ')
-			args.shift()
+			const args = message.content
+				.substring(process.env.PREFIX.length)
+				.split(' ');
+			args.shift();
 			const userToBan = args[0];
 			console.log(userToBan);
-			if (typeof(userToBan) === 'string') {
+			if (typeof userToBan === 'string') {
 				const target = mentions.users.first();
 				if (target) {
 					const targetMember = message.guild.members.cache.get(target.id);
 					targetMember.ban();
 					message.channel.send(`${tag} That user was banned`);
-				} else if(!target) {
-					const targetMember = message.guild.members.cache.get(userToBan)
+				} else if (!target) {
+					const targetMember = message.guild.members.cache.get(userToBan);
 					targetMember.ban();
 					message.channel.send(`<@${tag}> That user was banned`);
-				} 
-			} else if(typeof(userToBan) === 'undefined') {
+				}
+			} else if (typeof userToBan === 'undefined') {
 				message.channel.send(`${tag} Please specify someone to ban.`);
-				
 			}
 		} else {
 			message.channel.send(
@@ -64,24 +65,25 @@ client.on('ready', () => {
 			member.hasPermission('ADMINISTRATOR') ||
 			member.hasPermission('KICK_MEMBERS')
 		) {
-			const args = message.content.substring(process.env.PREFIX.length).split(' ')
-			args.shift()
+			const args = message.content
+				.substring(process.env.PREFIX.length)
+				.split(' ');
+			args.shift();
 			const userToKick = args[0];
 			console.log(userToKick);
-			if (typeof(userToKick) === 'string') {
+			if (typeof userToKick === 'string') {
 				const target = mentions.users.first();
 				if (target) {
 					const targetMember = message.guild.members.cache.get(target.id);
 					targetMember.kick();
 					message.channel.send(`${tag} That user was kicked`);
-				} else if(!target) {
-					const targetMember = message.guild.members.cache.get(userToKick)
+				} else if (!target) {
+					const targetMember = message.guild.members.cache.get(userToKick);
 					targetMember.kick();
 					message.channel.send(`<@${userToKick}> That user was kicked`);
-				} 
-			} else if(typeof(userToKick) === 'undefined') {
+				}
+			} else if (typeof userToKick === 'undefined') {
 				message.channel.send(`${tag} Please specify someone to kick.`);
-				
 			}
 		} else {
 			message.channel.send(
@@ -154,23 +156,6 @@ client.on('ready', () => {
 			data.push(
 				`\nYou can send \`${process.env.PREFIX}help [command name]\` to get info on a specific command!`
 			);
-			/*
-			message.author
-				.send(data, { split: true })
-				.then(() => {
-					if (message.channel.type === 'dm') return;
-					message.reply("I've sent you a DM with all my commands!");
-				})
-				.catch((error) => {
-					console.error(
-						`Could not send help DM to ${message.author.tag}.\n`,
-						error
-					);
-					message.reply(
-						"it seems like I can't DM you! Do you have DMs disabled?"
-					);
-				});
-				*/
 			message.channel.send(data, { split: true });
 		} else {
 			const name = args[1].toLowerCase();
@@ -223,81 +208,121 @@ client.on('ready', () => {
 				img = found.subpods[0].img.src;
 			}
 			if (img) {
-				message.channel.send(img);
+				let embed = new discord.MessageEmbed();
+				embed.setTitle(`Equation: ${word}`).setImage(img);
+				message.channel.send(embed);
 			} else {
 				message.channel.send('There seems to be an error');
 			}
 		});
 	});
 
+	commands(client, 'dev', (message) => {
+		const reply = 'The devs are: Suban#8687 and nottheonetyonethguy#1864';
+		message.channel.send(reply);
+	});
+
+	commands(client, 'code', (message) => {
+		const link = 'https://github.com/IT-Club-Pulchowk/Hikana';
+		message.channel.send(link);
+	});
+
+	commands(client, 'about', (message) => {
+		msg =
+			'You can read about be from https://github.com/IT-Club-Pulchowk/Hikana#about';
+		message.channel.send(msg);
+	});
+
 	welcome(client);
 
 	commands(client, 'welcomeMessage', (message) => {
 		const { member } = message;
-		if(member.hasPermission('ADMINISTRATOR')){
+		if (member.hasPermission('ADMINISTRATOR')) {
 			const args = message.content
-			.substring(process.env.PREFIX.length)
-			.split(' ');
-				args.shift()
-				file.pop('message');
-				file.append('message', args.join(' '));
-				file.save();
-		} else if(!(member.hasPermission('ADMINISTRATOR'))) {
-			message.channel.send(`<@${member.id}> You don't have permissions for this command.`)
+				.substring(process.env.PREFIX.length)
+				.split(' ');
+			args.shift();
+			file.pop('message');
+			file.append('message', args.join(' '));
+			file.save();
+		} else if (!member.hasPermission('ADMINISTRATOR')) {
+			message.channel.send(
+				`<@${member.id}> You don't have permissions for this command.`
+			);
 		}
 	});
 
 	commands(client, 'avatar', (message) => {
-	
-	const { member, mentions } = message;
+		const { member, mentions } = message;
 
-	const tag = `<@${member.id}>`;
+		const tag = `<@${member.id}>`;
 
-	const embed = new discord.MessageEmbed()
-		
-	const args = message.content.substring(process.env.PREFIX.length).split(' ')
-	args.shift()
-	const userAvatar = args[0];
-	if (typeof(userAvatar) === 'string') {
-		const target = mentions.users.first();
-		if (target) {
-			const targetMember = message.guild.members.cache.get(target.id);
-			embed.setTitle("I fetched the display picture you requested. Here,")
-			.setImage(targetMember.user.displayAvatarURL({
-				format: 'png',
-				size: 1024
-			}))
-			.setColor(`RANDOM`)
-			.setAuthor('Hikana', 'https://i.imgur.com/TAKFpVd.png', 'https://github.com/IT-Club-Pulchowk/Hikana/')
-			message.channel.send(embed);
-		} else if(!target) {
-				const targetMember = message.guild.members.cache.get(userAvatar)
-				if(targetMember){
-					embed.setTitle("I fetched the display picture you requested. Here,")
-					.setImage(targetMember.user.displayAvatarURL({
-						format: 'png',
-						size: 1024
-					}))
+		const embed = new discord.MessageEmbed();
+
+		const args = message.content
+			.substring(process.env.PREFIX.length)
+			.split(' ');
+		args.shift();
+		const userAvatar = args[0];
+		if (typeof userAvatar === 'string') {
+			const target = mentions.users.first();
+			if (target) {
+				const targetMember = message.guild.members.cache.get(target.id);
+				embed
+					.setTitle('I fetched the display picture you requested. Here,')
+					.setImage(
+						targetMember.user.displayAvatarURL({
+							format: 'png',
+							size: 1024,
+						})
+					)
 					.setColor(`RANDOM`)
-					.setAuthor('Hikana', 'https://i.imgur.com/TAKFpVd.png', 'https://github.com/IT-Club-Pulchowk/Hikana/')
+					.setAuthor(
+						'Hikana',
+						'https://i.imgur.com/TAKFpVd.png',
+						'https://github.com/IT-Club-Pulchowk/Hikana/'
+					);
+				message.channel.send(embed);
+			} else if (!target) {
+				const targetMember = message.guild.members.cache.get(userAvatar);
+				if (targetMember) {
+					embed
+						.setTitle('I fetched the display picture you requested. Here,')
+						.setImage(
+							targetMember.user.displayAvatarURL({
+								format: 'png',
+								size: 1024,
+							})
+						)
+						.setColor(`RANDOM`)
+						.setAuthor(
+							'Hikana',
+							'https://i.imgur.com/TAKFpVd.png',
+							'https://github.com/IT-Club-Pulchowk/Hikana/'
+						);
 					message.channel.send(embed);
 				} else {
-					message.channel.send(`${tag} Please specify a valid user-id.`)
+					message.channel.send(`${tag} Please specify a valid user-id.`);
 				}
-				
-			} 
-		} else if(typeof(userToKick) === 'undefined') {
-			embed.setTitle("I fetched the display picture you requested. Here,")
-			.setImage(message.author.displayAvatarURL({
-				format: 'png',
-				size: 1024
-			}))
-			.setColor(`RANDOM`)
-			.setAuthor('Hikana', 'https://i.imgur.com/TAKFpVd.png', 'https://github.com/IT-Club-Pulchowk/Hikana/')
-			message.channel.send(embed);	
+			}
+		} else if (typeof userToKick === 'undefined') {
+			embed
+				.setTitle('I fetched the display picture you requested. Here,')
+				.setImage(
+					message.author.displayAvatarURL({
+						format: 'png',
+						size: 1024,
+					})
+				)
+				.setColor(`RANDOM`)
+				.setAuthor(
+					'Hikana',
+					'https://i.imgur.com/TAKFpVd.png',
+					'https://github.com/IT-Club-Pulchowk/Hikana/'
+				);
+			message.channel.send(embed);
 		}
-		
-	})
+	});
 });
 
 client.login(process.env.BOT_TOKEN);

@@ -51,8 +51,8 @@ let command_list = [
 		name: 'avatar',
 		description: `Returns the author's or the specified user's avatar`,
 		arguments: 'optional',
-		usage: ''
-	}
+		usage: '',
+	},
 ];
 
 nsfw_words = ['fuck', 'porn', 'pornography'];
