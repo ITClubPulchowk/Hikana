@@ -39,9 +39,9 @@ Q_REACT=<react-required-bool>
 Q_REACT_ROLE=<some-channel-role>
 ```
 
-You can get \<wolfram-token\> by going to their website and creating a developer account. This is required for the plot frature.  
+You can get \<wolfram-token\> by going to their website and creating a developer account. This is required for the plot feature.
 The command "q" is used to send questions to a specific channel. For this, it required a channel id. You can get it by right clicking a text channel and then Copy ID. paste the value in the place of \<channel-id\>  
-\<reactt-required-bool\> is a boolean value. If set to true, a moderator must react to the message in a given time<react-time>( not implemented yet, default 2 mins) in minutes for it to reach channel set by \<channel-id\>  
+\<react-required-bool\> is a boolean value. If set to true, a moderator must react to the message in a given time<react-time>(not implemented yet, default 2 mins) in minutes for it to reach channel set by \<channel-id\>  
 <some-channel-role> is role id of the moderator.
 
 
@@ -51,35 +51,31 @@ You can now start the bot with
 node .
 ```  
 
-## About 
+## Information
+
+### Profile
 Alias: Hikana  
-Hikan + a  
-Pessimistic + a  
+Legal Name: Riharu Yuki (Riharu - 理暖)
 
-Legal Name: Riharu Yuki  
-Riharu 理暖  
-理 means "management". 暖 means "warm".   
-warm manager  
-yuki means snow  
-basically the stereotypical cold on the outside warm when you get to know her. but also is afraid that her actions might get her into trouble.  
-tsundere? platonic tsundere?  
+Meaning: Hikan + a (Pessimistic + a). 理 means "management", 暖 means "warm" as in warm manager. Yuki means snow. Basically the stereotypical cold on the outside warm when you get to know her. But also is afraid that her actions might get her into trouble. Tsundere? Platonic Tsundere?
 
-Occupation: part time at IT club discord server. Her boss dosent pay her adequately, bad pranjal. since it can be done online she manages to crunch some overtime while in college.  
+Occupation: Part time at IT club discord server. Her boss dosent pay her adequately, bad Pranjal. Since it can be done online she manages to crunch some overtime while in college.
 
-Hair Color: Black  
-Hair Type: Ironed  
-Eye Color: Black  
-Skin Color: Wheat    
-Voice: If pramish's voice was more cuter than sexy  
-Distinguishing Features: Dosent like to make small talk. Only talks when called  
-Blood group: B positive  
+Date of Birth: 31st May 2021
+Hair Color: Black
+Hair Type: Ironed
+Eye Color: Black
+Skin Color: Wheat
+Voice: If pramish's voice was more cuter than sexy
+Distinguishing Features: Doesn't like to make small talk. Only talks when she is called
+Blood group: B positive
 
-Powers and Abilities  
-Powers: can handle a umbrella one handed while running.  
-Power Limitations: shouldnt be wearing heels if she is to reach maximum time management.  
-Abilities: can live on ramen for days  
-Gadgets/Tech: android + laptop  
-Mental/Emotional Weaknesses: she thinks too much about the future and always in a morbid sense. that is why she has gotten the alias hikana.  
+### Powers and Abilities  
+Powers: Can handle a umbrella one handed while running.  
+Power Limitations: Shouldn't be wearing heels if she is to reach maximum time management.
+Abilities: Can live on ramen for days
+Gadgets/Tech: Android + Laptop
+Mental/Emotional Weaknesses: She thinks too much about the future and always in a morbid sense. That is why she has gotten the alias hikana.
 
 ###### TODO
 * Questions
