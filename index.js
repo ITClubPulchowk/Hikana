@@ -4,6 +4,7 @@ const path = require('path');
 const discord = require('discord.js');
 const axios = require('axios');
 const { command_list } = require('./data.js');
+const nsfwCheck = require('./nsfw-check')
 
 const editJsonFile = require('edit-json-file');
 const file = editJsonFile(path.join(__dirname, 'config.json'));
@@ -230,6 +231,8 @@ client.on('ready', () => {
 		});
 	});
 
+	nsfwCheck(client);
+	
 	welcome(client);
 
 	commands(client, 'welcomeMessage', (message) => {
