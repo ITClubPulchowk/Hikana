@@ -51,19 +51,25 @@ let command_list = [
 		name: 'avatar',
 		description: `Returns the author's or the specified user's avatar`,
 		arguments: 'optional',
-		usage: ''
+		usage: '',
+	},
+	{
+		name: 'q',
+		description: 'Sends a message to the question channel',
+		arguments: 'required',
+		usage: '<question>',
 	},
 	{
 		name: 'mute',
 		description: 'Mutes the specified user',
 		arguments: 'required',
-		usage: '@member'
-	}
+		usage: '@member',
+	},
 ];
 
 nsfw_words = ['fuck', 'cock', 'deepthroat', 'dick', 'cumshot', 'jerk off', 'fingering', 'masturbate', 'bitch', 
-'blowjob', 'bullshit', 'dickhead', 'asshole', 'boobs', 'dildo', 'erection', 'handjob', 'vibrator', 'nigga',
-'threesome', 'orgy', 'bdsm', 'sexting', 'cowgirl', 'moan', 'milf', 'orgasm', 'cum', 'cunt', 'bastard', 'faggot'];
+	'blowjob', 'bullshit', 'dickhead', 'asshole', 'boobs', 'dildo', 'erection', 'handjob', 'vibrator', 'nigga',
+	'threesome', 'orgy', 'bdsm', 'sexting', 'cowgirl', 'moan', 'milf', 'orgasm', 'cum', 'cunt', 'bastard', 'faggot'];
 nsfw_words = nsfw_words.join('|');
 nsfw_words = '(' + nsfw_words + ')';
 
