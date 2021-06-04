@@ -4,6 +4,7 @@ const path = require('path');
 const discord = require('discord.js');
 const axios = require('axios');
 const nsfwCheck = require('./nsfw-check.js');
+const whenMentioned = require('./whenMentioned.js');
 const { command_list } = require('./data.js');
 
 const editJsonFile = require('edit-json-file');
@@ -245,11 +246,9 @@ client.on('ready', () => {
 	});
 
 	commands(client, 'q', (message) => {
-		const id = message.author.id;
 		const author = {
-			id: id,
-			name:
-				message.guild.members.cache.get(id).nickname || message.author.username,
+			id: message.author.id,
+			name: message.member.displayName,
 		};
 		const question = message.content.slice(2);
 		if (!question) {
@@ -260,6 +259,10 @@ client.on('ready', () => {
 			.setTitle(`${author.name}`)
 			.setColor(`RANDOM`)
 			.setDescription(question);
+
+		if (message.attachments) {
+			embed.setImage(message.attachments.first().proxyURL);
+		}
 		const questionChannel = process.env.Q_CHANNEL;
 		const reactRequired = process.env.Q_REACT;
 		if (questionChannel) {
@@ -313,6 +316,7 @@ client.on('ready', () => {
 	});
 
 	welcome(client);
+	whenMentioned(client);
 
 	commands(client, 'welcomeMessage', (message) => {
 		const { member } = message;

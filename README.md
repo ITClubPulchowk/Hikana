@@ -76,8 +76,8 @@ node .
 
 ###### TODO
 * Questions
+* Clean -> copy channel features to new channel, then delete old one
 * notice
-* Add instruction for windows
 * intro // Server intro (tsundere)
 * permission setup
 * archive / archive catagory
