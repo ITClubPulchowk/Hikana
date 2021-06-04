@@ -101,12 +101,13 @@ client.on('ready', () => {
 			.slice(process.env.PREFIX.length)
 			.trim()
 			.split(/ +/);
+		const word = args[0];
 		args.shift();
 		let word = args.join(' ');
 
 		if (!word) {
 			message.channel.send(
-				`Use the correct format, baka. ${process.env.PREFIX}${args[0]} <search-term>`
+				`Use the correct format, baka. ${process.env.PREFIX}${word} <search-term>`
 			);
 		} else {
 			let url = 'https://en.wikipedia.org/w/api.php';
@@ -201,11 +202,15 @@ client.on('ready', () => {
 			const data = response.data;
 			let pods = data.queryresult.pods;
 			let img;
+			console.log(pods);
 			const found = pods.find((pod) => pod.id === 'Plot');
 			if (!found) {
 				const imp_plot = pods.find((pod) => pod.id === 'ImplicitPlot');
+				const plot_3d = pods.find((pod) => pod.id === '3DPlot');
 				if (imp_plot) {
 					img = imp_plot.subpods[0].img.src;
+				} else if (plot_3d) {
+					img = plot_3d.subpods[0].img.src;
 				} else {
 					message.channel.send('Please contact the bot developer');
 				}
