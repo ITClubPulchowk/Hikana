@@ -101,13 +101,13 @@ client.on('ready', () => {
 			.slice(process.env.PREFIX.length)
 			.trim()
 			.split(/ +/);
-		const word = args[0];
+		const command_name = args[0];
 		args.shift();
 		let word = args.join(' ');
 
 		if (!word) {
 			message.channel.send(
-				`Use the correct format, baka. ${process.env.PREFIX}${word} <search-term>`
+				`Use the correct format, baka. ${process.env.PREFIX}${command_name} <search-term>`
 			);
 		} else {
 			let url = 'https://en.wikipedia.org/w/api.php';
