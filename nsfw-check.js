@@ -19,7 +19,7 @@ module.exports = (client) => {
         if (found != -1) {
             newMessage.react('🔞');
         } else if(found = -1) {
-            newMessage.reactions.removeAll()
+            newMessage.reactions.cache.get('🔞').remove()
         }
     })
 }
