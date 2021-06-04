@@ -7,14 +7,6 @@ module.exports = (client, aliases, callback) => {
 	}
 	client.on('message', (message) => {
 		const { content } = message;
-
-		// nsfw word check
-		let re = new RegExp(nsfw_words, 'i');
-		found = content.search(re);
-		if (found != -1) {
-			message.react('🔞');
-		}
-
 		aliases.forEach((alias) => {
 			const command = `${process.env.PREFIX}${alias}`;
 

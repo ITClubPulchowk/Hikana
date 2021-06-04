@@ -227,6 +227,8 @@ client.on('ready', () => {
 		});
 	});
 
+	nsfwCheck(client);
+	
 	commands(client, 'dev', (message) => {
 		const reply = 'The devs are: Suban#8687 and nottheonetyonethguy#1864';
 		message.channel.send(reply);
