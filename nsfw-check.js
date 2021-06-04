@@ -15,11 +15,15 @@ module.exports = (client) => {
         // nsfw word check
         let re = new RegExp(nsfw_words, 'i');
         found = content.search(re);
-        console.log(found);
         if (found != -1) {
             newMessage.react('🔞');
         } else if(found = -1) {
-            newMessage.reactions.cache.get('🔞').remove()
+            const rxn = newMessage.reactions.cache.get('🔞')
+            if(!rxn) { 
+                return
+            } else {
+                return rxn.remove()
+            }
         }
     })
 }
