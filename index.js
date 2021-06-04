@@ -106,7 +106,7 @@ client.on('ready', () => {
 
 		if (!word) {
 			message.channel.send(
-				`Please use the correct format. ${process.env.PREFIX}${args[0]} <search-term>`
+				`Use the correct format, baka. ${process.env.PREFIX}${args[0]} <search-term>`
 			);
 		} else {
 			let url = 'https://en.wikipedia.org/w/api.php';
@@ -190,6 +190,11 @@ client.on('ready', () => {
 		let word = args.join(' ');
 		console.log(word);
 		const appID = process.env.WOLFRAM_TOKEN;
+		if (!appID) {
+			message.channel.send(
+				'Sorry you need WOLFRAM_TOKEN for this to function correctly'
+			);
+		}
 		const input = encodeURIComponent(word);
 		const url = `http://api.wolframalpha.com/v2/query?input=${input}&appid=${appID}&output=json`;
 		axios(url).then((response) => {
@@ -239,15 +244,47 @@ client.on('ready', () => {
 		if (!question) {
 			return;
 		}
+
 		const embed = new discord.MessageEmbed();
 		embed
 			.setTitle(`${author.name}`)
 			.setColor(`RANDOM`)
 			.setDescription(question);
 		const questionChannel = process.env.Q_CHANNEL;
+		const reactRequired = process.env.Q_REACT;
 		if (questionChannel) {
-			client.channels.cache.get(questionChannel).send(embed);
-			message.react('👌');
+			if (reactRequired) {
+				// There is probably a better way to do this
+				const filter = (reaction, user) => {
+					const mods = message.guild.roles.cache
+						.get(process.env.Q_REACT_ROLE)
+						.members.map((m) => m.user.id);
+					let modReactecd = false;
+					if (reaction.emoji.name === '✅') {
+						console.log('checkmark');
+						for (user of reaction.users.cache.keys()) {
+							if (mods.includes(user)) {
+								modReactecd = true;
+								break;
+							}
+						}
+					}
+					return reaction.emoji.name === '✅' && modReactecd;
+				};
+				const collector = message.createReactionCollector(filter, {
+					time: 60000 * 2,
+				});
+				collector.on('collect', (reaction, user) => {
+					console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+					client.channels.cache.get(questionChannel).send(embed);
+				});
+
+				collector.on('end', (collected) => {
+					console.log(`Collected ${collected.size} items`);
+
+					if (collected.size > 0) message.react('👌');
+				});
+			}
 		} else {
 			message.reply(
 				'There seems to be a problem, can you dm a instructor or a volunteers'
