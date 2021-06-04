@@ -56,11 +56,8 @@ node .
 ### Profile
 * **Alias**: *Hikana*
 * **Legal Name**: *Riharu Yuki (Riharu - 理暖)*
-
 * **Meaning**: *Hikan + a (Pessimistic + a). 理 means "management", 暖 means "warm" as in warm manager. Yuki means snow. Basically the stereotypical cold on the outside warm when you get to know her. But also is afraid that her actions might get her into trouble. Tsundere? Platonic Tsundere?*
-
 * **Occupation**: *Part time at IT club discord server. Her boss dosent pay her adequately, bad Pranjal. Since it can be done online she manages to crunch some overtime while in college.*
-
 * **Date of Birth**: *31st May 2021*
 * **Hair Color**: *Black*
 * **Hair Type**: *Ironed*
