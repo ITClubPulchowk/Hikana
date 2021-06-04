@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const discord = require('discord.js');
 const axios = require('axios');
+const nsfwCheck = require('./nsfw-check.js');
 const { command_list, aboutme } = require('./data.js');
 
 const editJsonFile = require('edit-json-file');
