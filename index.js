@@ -245,7 +245,12 @@ client.on('ready', () => {
 	});
 
 	commands(client, 'q', (message) => {
-		const author = { id: message.author.id, name: message.author.username };
+		const id = message.author.id;
+		const author = {
+			id: id,
+			name:
+				message.guild.members.cache.get(id).nickname || message.author.username,
+		};
 		const question = message.content.slice(2);
 		if (!question) {
 			return;
@@ -268,7 +273,6 @@ client.on('ready', () => {
 					let modReactecd = false;
 					if (reaction.emoji.name === '👌') {
 						for (user of reaction.users.cache.keys()) {
-							console.log(mods);
 							if (mods.includes(user)) {
 								modReactecd = true;
 								message.react('✅');
@@ -284,11 +288,9 @@ client.on('ready', () => {
 				collector.on('collect', (reaction, user) => {
 					console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
 					if (!questions_in_question_channel.includes(message.id)) {
-						console.log('send question');
 						client.channels.cache.get(questionChannel).send(embed);
 						questions_in_question_channel += message.id;
 					} else {
-						console.log('we jump here');
 					}
 				});
 
@@ -297,7 +299,6 @@ client.on('ready', () => {
 				});
 			} else {
 				message.react('✅');
-				console.log('no test');
 				client.channels.cache.get(questionChannel).send(embed);
 			}
 		} else {
