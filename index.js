@@ -4,7 +4,7 @@ const path = require('path');
 const discord = require('discord.js');
 const axios = require('axios');
 const nsfwCheck = require('./nsfw-check.js');
-const { command_list, aboutme } = require('./data.js');
+const { command_list } = require('./data.js');
 
 const editJsonFile = require('edit-json-file');
 const file = editJsonFile(path.join(__dirname, 'config.json'));
@@ -18,7 +18,7 @@ client.on('ready', () => {
 	console.log('the client has logged in');
 
 	commands(client, 'ping', (message) => {
-		message.channel.send('Pong');
+		message.react('🏓');
 	});
 
 	commands(client, 'ban', (message) => {
@@ -180,9 +180,8 @@ client.on('ready', () => {
 	});
 
 	commands(client, 'react', (message) => {
-		message.react('🔞');
+		message.react('⚽');
 	});
-
 	commands(client, 'plot', (message) => {
 		const args = message.content
 			.slice(process.env.PREFIX.length)
@@ -190,7 +189,6 @@ client.on('ready', () => {
 			.split(/ +/);
 		args.shift();
 		let word = args.join(' ');
-		console.log(word);
 		const appID = process.env.WOLFRAM_TOKEN;
 		if (!appID) {
 			message.channel.send(
@@ -203,7 +201,6 @@ client.on('ready', () => {
 			const data = response.data;
 			let pods = data.queryresult.pods;
 			let img;
-			console.log(pods);
 			const found = pods.find((pod) => pod.id === 'Plot');
 			if (!found) {
 				const imp_plot = pods.find((pod) => pod.id === 'ImplicitPlot');
@@ -229,7 +226,7 @@ client.on('ready', () => {
 	});
 
 	nsfwCheck(client);
-	
+
 	commands(client, 'dev', (message) => {
 		const reply = 'The devs are: Suban#8687 and nottheonetyonethguy#1864';
 		message.channel.send(reply);
@@ -269,7 +266,6 @@ client.on('ready', () => {
 						.members.map((m) => m.user.id);
 					let modReactecd = false;
 					if (reaction.emoji.name === '✅') {
-						console.log('checkmark');
 						for (user of reaction.users.cache.keys()) {
 							if (mods.includes(user)) {
 								modReactecd = true;
