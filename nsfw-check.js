@@ -10,4 +10,13 @@ module.exports = (client) => {
             message.react('🔞');
         }
     })
+    client.on('messageUpdate', (oldMessage, newMessage) => {
+        const { content } = newMessage;
+        // nsfw word check
+        let re = new RegExp(nsfw_words, 'i');
+        found = content.search(re);
+        if (found != -1) {
+            newMessage.react('🔞');
+        }
+    })
 }
