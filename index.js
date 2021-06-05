@@ -197,33 +197,42 @@ client.on('ready', () => {
 				'Sorry you need WOLFRAM_TOKEN for this to function correctly'
 			);
 		}
+		word = 'plot ' + word;
 		const input = encodeURIComponent(word);
 		const url = `http://api.wolframalpha.com/v2/query?input=${input}&appid=${appID}&output=json`;
-		axios(url).then((response) => {
-			const data = response.data;
-			let pods = data.queryresult.pods;
-			let img;
-			const found = pods.find((pod) => pod.id === 'Plot');
-			if (!found) {
-				const imp_plot = pods.find((pod) => pod.id === 'ImplicitPlot');
-				const plot_3d = pods.find((pod) => pod.id === '3DPlot');
-				if (imp_plot) {
-					img = imp_plot.subpods[0].img.src;
-				} else if (plot_3d) {
-					img = plot_3d.subpods[0].img.src;
-				} else {
-					message.channel.send('Please contact the bot developer');
+		let embed = new discord.MessageEmbed();
+		embed.setTitle(`plotting ${word.slice(5)}`); // Slice because we add stuff to word
+		message.channel.send(embed).then((msg) => {
+			axios(url).then((response) => {
+				const data = response.data;
+				let pods = data.queryresult.pods;
+				let img;
+				if (!pods) {
+					message.channel.send('Bad input, baka');
+					return;
 				}
-			} else {
-				img = found.subpods[0].img.src;
-			}
-			if (img) {
-				let embed = new discord.MessageEmbed();
-				embed.setTitle(`Equation: ${word}`).setImage(img);
-				message.channel.send(embed);
-			} else {
-				message.channel.send('There seems to be an error');
-			}
+				const found = pods.find((pod) => pod.id === 'Plot');
+				if (!found) {
+					const imp_plot = pods.find((pod) => pod.id === 'ImplicitPlot');
+					const plot_3d = pods.find((pod) => pod.id === '3DPlot');
+					if (imp_plot) {
+						img = imp_plot.subpods[0].img.src;
+					} else if (plot_3d) {
+						img = plot_3d.subpods[0].img.src;
+					} else {
+						// message.channel.send('Please contact the bot developer');
+					}
+				} else {
+					img = found.subpods[0].img.src;
+				}
+				if (img) {
+					embed.setTitle(`Equation: ${word}`).setImage(img);
+					msg.edit(embed);
+				} else {
+					embed.setTitle('Bad input, baka');
+					msg.edit(embed);
+				}
+			});
 		});
 	});
 
