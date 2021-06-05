@@ -306,7 +306,8 @@ client.on('ready', () => {
 			name: message.member.displayName,
 		};
 		const question = message.content.slice(2);
-		if (!question) {
+		if (!(question || message.attachments.first())) {
+			console.log('bad message');
 			return;
 		}
 		const embed = new discord.MessageEmbed();
