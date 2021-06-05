@@ -6,17 +6,23 @@ let command_list = [
 		usage: '',
 	},
 	{
-		name: 'nisan',
-		description: 'nisan',
+		name: 'about',
+		description: 'Gives info about the bot',
 		arguments: 'none',
 		usage: '',
 	},
-	{
-		name: 'wiki',
-		description: 'searches wikipedia for the topic',
-		arguments: 'required',
-		usage: '<search-term>',
-	},
+	// {
+	// 	name: 'nisan',
+	// 	description: 'nisan',
+	// 	arguments: 'none',
+	// 	usage: '',
+	// },
+	// {
+	// 	name: 'wiki',
+	// 	description: 'searches wikipedia for the topic',
+	// 	arguments: 'required',
+	// 	usage: '<search-term>',
+	// },
 	{
 		name: 'intro',
 		description: 'gives you the description of the server',
@@ -67,9 +73,39 @@ let command_list = [
 	},
 ];
 
-nsfw_words = ['fuck', 'cock', 'deepthroat', 'dick', 'cumshot', 'jerk off', 'fingering', 'masturbate', 'bitch', 
-	'blowjob', 'bullshit', 'dickhead', 'asshole', 'boobs', 'dildo', 'erection', 'handjob', 'vibrator', 'nigga',
-	'threesome', 'orgy', 'bdsm', 'sexting', 'cowgirl', 'moan', 'milf', 'orgasm', 'cum', 'cunt', 'bastard', 'faggot'];
+nsfw_words = [
+	'fuck',
+	'cock',
+	'deepthroat',
+	'dick',
+	'cumshot',
+	'jerk off',
+	'fingering',
+	'masturbate',
+	'bitch',
+	'blowjob',
+	'bullshit',
+	'dickhead',
+	'asshole',
+	'boobs',
+	'dildo',
+	'erection',
+	'handjob',
+	'vibrator',
+	'nigga',
+	'threesome',
+	'orgy',
+	'bdsm',
+	'sexting',
+	'cowgirl',
+	'moan',
+	'milf',
+	'orgasm',
+	'cum',
+	'cunt',
+	'bastard',
+	'faggot',
+];
 nsfw_words = nsfw_words.join('|');
 nsfw_words = '(' + nsfw_words + ')';
 

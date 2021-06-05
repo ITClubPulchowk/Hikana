@@ -6,6 +6,7 @@ const axios = require('axios');
 const nsfwCheck = require('./nsfw-check.js');
 const whenMentioned = require('./whenMentioned.js');
 const { command_list } = require('./data.js');
+const about = require('./about.json');
 
 const editJsonFile = require('edit-json-file');
 const file = editJsonFile(path.join(__dirname, 'config.json'));
@@ -99,6 +100,7 @@ client.on('ready', () => {
 		client.emit('guildMemberAdd', message.member);
 	});
 
+	/*
 	commands(client, 'wiki', (message) => {
 		const args = message.content
 			.slice(process.env.PREFIX.length)
@@ -113,12 +115,6 @@ client.on('ready', () => {
 				`Use the correct format, baka. ${process.env.PREFIX}${command_name} <search-term>`
 			);
 		} else {
-			if (word.toLowerCase() === 'nisan') {
-				message.channel.send(
-					'https://cdn.discordapp.com/attachments/744591904427081811/846292516009279529/bitch.gif'
-				);
-				return;
-			}
 			let url = 'https://en.wikipedia.org/w/api.php';
 
 			let params = {
@@ -139,34 +135,41 @@ client.on('ready', () => {
 			});
 		}
 	});
+	*/
 
+	/*
 	commands(client, 'nisan', (message) => {
 		message.channel.send(
 			'https://cdn.discordapp.com/attachments/744591904427081811/846292516009279529/bitch.gif'
 		);
 	});
+	*/
 
 	commands(client, 'intro', (message) => {
 		// Todo for later
-		let reply = '';
-		reply += 'Welcome to IT-Club, ';
-		reply += '#get-roles';
-		message.channel.send(reply);
+		let embed = new discord.MessageEmbed();
+		embed.setTitle('Welcome to C Event by IT-CLUB, Pulchowk');
+		embed.setAuthor(client.user.username, client.user.avatarURL(32));
+		message.channel.send(embed);
 	});
 
 	commands(client, 'help', (message) => {
 		let data = [];
+		let embed = new discord.MessageEmbed();
+		embed.setAuthor(client.user.username, client.user.avatarURL(32));
 		const args = message.content
 			.slice(process.env.PREFIX.length)
 			.trim()
 			.split(/ +/);
 		if (args.length === 1) {
-			data.push("Here's a list of all my commands:");
-			data.push(command_list.map((command) => command.name).join(', '));
-			data.push(
+			embed.setTitle("Here's a list of all my commands: ");
+			embed.setDescription(
+				command_list.map((command) => command.name).join(', ')
+			);
+			embed.setFooter(
 				`\nYou can send \`${process.env.PREFIX}help [command name]\` to get info on a specific command!`
 			);
-			message.channel.send(data, { split: true });
+			message.channel.send(embed);
 		} else {
 			const name = args[1].toLowerCase();
 			const command = command_list.find((element) => element.name === name);
@@ -175,6 +178,14 @@ client.on('ready', () => {
 				return message.reply("that's not a valid command!");
 			}
 			data.push(`**Name:** ${command.name}`);
+			embed.setTitle(`**Name:** ${command.name}`);
+			embed.addField(`**Description:**`, `${command.description}`);
+			embed.addField(`**Arguments:**`, `${command.arguments}`);
+			embed.addField(
+				`**Usage:**`,
+				`${process.env.PREFIX}${command.name} ${command.usage}`
+			);
+
 			if (command.description)
 				data.push(`**Description:** ${command.description}`);
 			// if (command.usage)
@@ -183,7 +194,7 @@ client.on('ready', () => {
 				`**Usage:** ${process.env.PREFIX}${command.name} ${command.usage}`
 			);
 
-			message.channel.send(data, { split: true });
+			message.channel.send(embed);
 		}
 	});
 
@@ -205,12 +216,7 @@ client.on('ready', () => {
 		}
 		word = 'plot ' + word;
 		let embed = new discord.MessageEmbed();
-		if (word.slice(5).toLowerCase() === 'nisan') {
-			embed.setTitle('We know what nisan is');
-			embed.setDescription('Nisan is a bitch');
-			message.channel.send(embed);
-			return;
-		}
+
 		const input = encodeURIComponent(word);
 		const url = `http://api.wolframalpha.com/v2/query?input=${input}&appid=${appID}&output=json`;
 		embed.setTitle(`plotting ${word.slice(5)}`); // Slice because we add stuff to word
@@ -263,20 +269,35 @@ client.on('ready', () => {
 
 	nsfwCheck(client);
 
-	commands(client, 'dev', (message) => {
-		const reply = 'The devs are: Suban#8687 and nottheonetyonethguy#1864';
-		message.channel.send(reply);
-	});
-
 	commands(client, 'code', (message) => {
 		const link = 'https://github.com/IT-Club-Pulchowk/Hikana';
-		message.channel.send(link);
+		let embed = new discord.MessageEmbed().setDescription(link);
+		message.channel.send(embed);
 	});
 
 	commands(client, 'about', (message) => {
-		msg =
-			'You can read about be from https://github.com/IT-Club-Pulchowk/Hikana#about';
-		message.channel.send(msg);
+		let embed = new discord.MessageEmbed();
+		embed.setAuthor(client.user.username, client.user.avatarURL(32));
+		for (key of Object.keys(about)) {
+			embed.addField(key, about[key], true);
+		}
+		axios
+			.get(
+				'https://api.github.com/repos/IT-Club-Pulchowk/Hikana/contributors',
+				{
+					Accept: 'application/vnd.github.v3+json',
+				}
+			)
+			.then((res) => {
+				let contributors = [];
+				res.data.forEach((person) => {
+					contributors.push(person.login);
+				});
+				if (contributors.length > 0) {
+					embed.addField('Developers', contributors.join(', '));
+				}
+				message.channel.send(embed);
+			});
 	});
 
 	commands(client, 'q', (message) => {
@@ -294,7 +315,7 @@ client.on('ready', () => {
 			.setColor(`RANDOM`)
 			.setDescription(question);
 
-		if (message.attachments) {
+		if (message.attachments.first()) {
 			embed.setImage(message.attachments.first().proxyURL);
 		}
 		const questionChannel = process.env.Q_CHANNEL;
