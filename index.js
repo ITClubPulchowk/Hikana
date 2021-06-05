@@ -113,6 +113,12 @@ client.on('ready', () => {
 				`Use the correct format, baka. ${process.env.PREFIX}${command_name} <search-term>`
 			);
 		} else {
+			if (word.toLowerCase() === 'nisan') {
+				message.channel.send(
+					'https://cdn.discordapp.com/attachments/744591904427081811/846292516009279529/bitch.gif'
+				);
+				return;
+			}
 			let url = 'https://en.wikipedia.org/w/api.php';
 
 			let params = {
@@ -198,9 +204,15 @@ client.on('ready', () => {
 			);
 		}
 		word = 'plot ' + word;
+		let embed = new discord.MessageEmbed();
+		if (word.slice(5).toLowerCase() === 'nisan') {
+			embed.setTitle('We know what nisan is');
+			embed.setDescription('Nisan is a bitch');
+			message.channel.send(embed);
+			return;
+		}
 		const input = encodeURIComponent(word);
 		const url = `http://api.wolframalpha.com/v2/query?input=${input}&appid=${appID}&output=json`;
-		let embed = new discord.MessageEmbed();
 		embed.setTitle(`plotting ${word.slice(5)}`); // Slice because we add stuff to word
 		message.channel.send(embed).then((msg) => {
 			axios(url).then((response) => {
@@ -208,25 +220,38 @@ client.on('ready', () => {
 				let pods = data.queryresult.pods;
 				let img;
 				if (!pods) {
-					message.channel.send('Bad input, baka');
+					embed.setTitle('Bad input, baka');
+					msg.edit(embed);
 					return;
 				}
+
+				// TODO: Refactor this mess
 				const found = pods.find((pod) => pod.id === 'Plot');
 				if (!found) {
 					const imp_plot = pods.find((pod) => pod.id === 'ImplicitPlot');
 					const plot_3d = pods.find((pod) => pod.id === '3DPlot');
+					const result = pods.find((pod) => pod.id === 'Result');
+					const surface_plot = pods.find((pod) => pod.id === 'SurfacePlot');
+					const plotOfSolution = pods.find(
+						(pod) => pod.id === 'PlotOfSolutionSet'
+					);
 					if (imp_plot) {
 						img = imp_plot.subpods[0].img.src;
 					} else if (plot_3d) {
 						img = plot_3d.subpods[0].img.src;
-					} else {
-						// message.channel.send('Please contact the bot developer');
+					} else if (result) {
+						img = result.subpods[0].img.src;
+					} else if (surface_plot) {
+						img = surface_plot.subpods[0].img.src;
+					} else if (plotOfSolution) {
+						img = plotOfSolution.subpods[0].img.src;
 					}
 				} else {
 					img = found.subpods[0].img.src;
 				}
+
 				if (img) {
-					embed.setTitle(`Equation: ${word}`).setImage(img);
+					embed.setTitle(`${word}`).setImage(img);
 					msg.edit(embed);
 				} else {
 					embed.setTitle('Bad input, baka');
