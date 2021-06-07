@@ -71,6 +71,24 @@ let command_list = [
 		arguments: 'required',
 		usage: '@member',
 	},
+	{
+		name: 'color',
+		description: 'Changes the color of the role the user specified',
+		arguments: 'required',
+		usage: 'role-name hexcode-of-the-color'
+	},
+	{
+		name: 'mute',
+		description: 'Mutes the specified user',
+		arguments: 'required',
+		usage: '@member'
+	},
+	{
+		name: 'unmute',
+		description: 'Unmutes the specified user',
+		arguments: 'required',
+		usage: '@member'
+	},
 ];
 
 nsfw_words = [

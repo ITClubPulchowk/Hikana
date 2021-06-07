@@ -566,7 +566,7 @@ client.on('ready', () => {
 					message.guild.member(targetMember.user).roles.remove(muteRole);
 					message.channel.send(`<@${targetMember.id}> was unmuted.`);
 					unmuteEmbed
-						.setTitle('Unute')
+						.setTitle('Unmute')
 						.setThumbnail(targetMember.user.displayAvatarURL())
 						.setDescription(`User <@${target.id}> was unmuted`)
 						.setFooter(`Unmuted by ${message.author.tag}`)
@@ -605,6 +605,25 @@ client.on('ready', () => {
 			return message.channel.send(`${tag} You dont't have permissions.`);
 		}
 
+	});
+
+	commands(client, 'color', (message) => {
+		const { member } = message;
+		
+		if (member.hasPermission('MANAGE_ROLES')) {
+			const embed = new discord.MessageEmbed()
+			const args = message.content.substring(process.env.PREFIX.length).split(' ')
+			args.shift()
+			const role = message.guild.roles.cache.find( role => role.name === `${args[0]}`)
+			role.setColor(args[1]);
+			embed.setTitle(`The role color was updated to ${args[1]}`)
+				.setColor(args[1])
+				.setTimestamp()
+			return message.channel.send(embed)	
+		} else {
+			message.channel.send(`<@${message.author.id}> you dont have permissions.`)
+		}
+		
 	});
 
 });
