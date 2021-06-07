@@ -6,6 +6,8 @@ const axios = require('axios');
 const nsfwCheck = require('./nsfw-check.js');
 const { command_list } = require('./data.js');
 
+const talkedRecently = new Set();
+
 const editJsonFile = require('edit-json-file');
 const file = editJsonFile(path.join(__dirname, 'config.json'));
 
@@ -18,6 +20,7 @@ client.on('ready', () => {
 	console.log('the client has logged in');
 
 	commands(client, 'ping', (message) => {
+		message.channel.send('pong')
 		message.react('🏓');
 	});
 
@@ -347,7 +350,7 @@ client.on('ready', () => {
 					.setAuthor(
 						'Hikana',
 						'https://i.imgur.com/TAKFpVd.png',
-						'https://github.com/IT-Club-Pulchowk/Hikana/'
+						'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 					);
 				message.channel.send(embed);
 			} else if (!target) {
@@ -365,7 +368,7 @@ client.on('ready', () => {
 						.setAuthor(
 							'Hikana',
 							'https://i.imgur.com/TAKFpVd.png',
-							'https://github.com/IT-Club-Pulchowk/Hikana/'
+							'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 						);
 					message.channel.send(embed);
 				} else {
@@ -385,13 +388,14 @@ client.on('ready', () => {
 				.setAuthor(
 					'Hikana',
 					'https://i.imgur.com/TAKFpVd.png',
-					'https://github.com/IT-Club-Pulchowk/Hikana/'
+					'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 				);
 			message.channel.send(embed);
 		}
 	});
 
 	commands(client, 'mute', (message) => {
+
 		const { member, mentions } = message;
 		const tag = `<@${member.id}>`;
 		const muteEmbed = new discord.MessageEmbed();
@@ -414,8 +418,8 @@ client.on('ready', () => {
 			if (typeof userToMute === 'string') {
 				const target = mentions.users.first();
 				if (target) {
-					// const targetMember = message.guild.members.cache.get(target.id)
-					// const removeRoles = message.guild.member(targetMember.user).roles.cache;
+					const targetMember = message.guild.members.cache.get(target.id)
+					const removeRoles = message.guild.member(targetMember.user).roles.cache;
 					message.guild.member(targetMember.user).roles.remove(removeRoles);
 					message.guild.member(targetMember.user).roles.add(muteRole);
 					message.channel.send(`<@${targetMember.id}> was muted.`);
@@ -430,8 +434,8 @@ client.on('ready', () => {
 				} else if (!target) {
 					const targetMember = message.guild.members.cache.get(userToMute);
 					if (targetMember) {
-						// const removeRoles = message.guild.member(targetMember.user).roles.cache;
-						// message.guild.member(targetMember.user).roles.remove(removeRoles)
+						const removeRoles = message.guild.member(targetMember.user).roles.cache;
+						message.guild.member(targetMember.user).roles.remove(removeRoles)
 						targetMember.user.roles.add(muteRole);
 						message.channel.send(`<@${targetMember.user.id} was muted>`);
 						muteEmbed
@@ -453,14 +457,84 @@ client.on('ready', () => {
 			} else if (typeof userToMute === 'undefined') {
 				return message.channel.send(`<@${tag}> Please specify a user to mute.`);
 			} else if (
-				!message.guild.members.get(client.user.id).hasPermission('MANAGE_ROLES')
+				!message.guild.member(client.user.id).hasPermission('MANAGE_ROLES')
 			) {
 				message.channe.send(`<@${tag}> I dont have permissions.`);
 			}
 		} else {
 			return message.channel.send(`${tag} You dont't have permissions.`);
 		}
+
 	});
+
+	commands(client, 'unmute', (message) => {
+
+		const { member, mentions } = message;
+		const tag = `<@${member.id}>`;
+		const unmuteEmbed = new discord.MessageEmbed();
+		const muteRole = member.guild.roles.cache.find(
+			(role) => role.name.toLowerCase() === 'muted'
+		);
+		const unmuteChannel = member.guild.channels.cache.find(
+			(channel) => channel.name === 'logs'
+		);
+		if (
+			member.hasPermission('ADMINISTRATOR') ||
+			member.hasPermission('MANAGE_ROLES')
+		) {
+			const args = message.content
+				.substring(process.env.PREFIX.length)
+				.split(' ');
+			args.shift();
+			const userToUnmute = args[0];
+			if (typeof userToUnmute === 'string') {
+				const target = mentions.users.first();
+				if (target) {
+					const targetMember = message.guild.members.cache.get(target.id)
+					message.guild.member(targetMember.user).roles.remove(muteRole);
+					message.channel.send(`<@${targetMember.id}> was unmuted.`);
+					unmuteEmbed
+						.setTitle('Unute')
+						.setThumbnail(targetMember.user.displayAvatarURL())
+						.setDescription(`User <@${target.id}> was unmuted`)
+						.setFooter(`Unmuted by ${message.author.tag}`)
+						.setTimestamp();
+					unmuteChannel.send(unmuteEmbed);
+					return message.channel.send(unmuteEmbed);
+				} else if (!target) {
+					const targetMember = message.guild.members.cache.get(userToUnmute);
+					if (targetMember) {
+						targetMember.user.roles.remove(muteRole);
+						message.channel.send(`<@${targetMember.user.id} was unmuted>`);
+						muteEmbed
+							.setTitle('Unmute')
+							.setThumbnail(targetMember.user.displayAvatarURL())
+							.setDescription(
+								`User <@${target.id}> was unmuted`
+							)
+							.setFooter(`Unuted by ${message.author.tag}`)
+							.setTimestamp();
+						unmuteChannel.send(unmuteEmbed);
+						return message.channel.send(unmuteEmbed);
+					} else if (!targetMember) {
+						return message.channel.send(
+							`${tag} Please specify a valid user-id.`
+						);
+					}
+				}
+			} else if (typeof userToMute === 'undefined') {
+				return message.channel.send(`${tag} Please specify a user to unmute.`);
+			} else if (
+				!message.guild.member(client.user.id).hasPermission('MANAGE_ROLES')
+			) {
+				message.channe.send(`${tag} I dont have permissions.`);
+			}
+		} else {
+			return message.channel.send(`${tag} You dont't have permissions.`);
+		}
+
+	});
+
 });
 
 client.login(process.env.BOT_TOKEN);
