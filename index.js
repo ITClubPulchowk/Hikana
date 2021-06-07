@@ -163,8 +163,8 @@ client.on('ready', () => {
 			.split(/ +/);
 		if (args.length === 1) {
 			embed.setTitle("Here's a list of all my commands: ");
-			embed.setDescription(
-				command_list.map((command) => command.name).join(', ')
+			command_list.forEach((command) =>
+				embed.addField(command.name, command.description, true)
 			);
 			embed.setFooter(
 				`\nYou can send \`${process.env.PREFIX}help [command name]\` to get info on a specific command!`
