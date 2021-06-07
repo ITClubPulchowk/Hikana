@@ -73,7 +73,7 @@ module.exports = (client) => {
 			'welcome-image.png'
 		);
 
-		channel.send(`${file.get().message}, ${member}!`, attachment);
+		channel.send(`${file.get().message}, ${member}!`);
 
 		// New memeber add
 		let embed = new discord.MessageEmbed();
@@ -96,6 +96,12 @@ module.exports = (client) => {
             `
 		);
 		embed.setFooter('💫⭐💫');
+		embed.attachFiles(attachment).setImage('attachment://welcome-image.png');
 		channel.send(embed);
+
+		let role = member.guild.roles.cache.find(
+			(role) => role.name === 'Participants'
+		);
+		if (role) member.roles.add(role);
 	});
 };
