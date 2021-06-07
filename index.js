@@ -4,7 +4,9 @@ const path = require('path');
 const discord = require('discord.js');
 const axios = require('axios');
 const nsfwCheck = require('./nsfw-check.js');
+const whenMentioned = require('./whenMentioned.js');
 const { command_list } = require('./data.js');
+const about = require('./about.json');
 
 const talkedRecently = new Set();
 
@@ -16,6 +18,7 @@ const welcome = require('./welcome');
 
 const client = new discord.Client();
 
+let questions_in_question_channel = [];
 client.on('ready', () => {
 	console.log('the client has logged in');
 
@@ -100,6 +103,7 @@ client.on('ready', () => {
 		client.emit('guildMemberAdd', message.member);
 	});
 
+	/*
 	commands(client, 'wiki', (message) => {
 		const args = message.content
 			.slice(process.env.PREFIX.length)
@@ -134,34 +138,41 @@ client.on('ready', () => {
 			});
 		}
 	});
+	*/
 
+	/*
 	commands(client, 'nisan', (message) => {
 		message.channel.send(
 			'https://cdn.discordapp.com/attachments/744591904427081811/846292516009279529/bitch.gif'
 		);
 	});
+	*/
 
 	commands(client, 'intro', (message) => {
 		// Todo for later
-		let reply = '';
-		reply += 'Welcome to IT-Club, ';
-		reply += '#get-roles';
-		message.channel.send(reply);
+		let embed = new discord.MessageEmbed();
+		embed.setTitle('Welcome to C Event by IT-CLUB, Pulchowk');
+		embed.setAuthor(client.user.username, client.user.avatarURL(32));
+		message.channel.send(embed);
 	});
 
 	commands(client, 'help', (message) => {
 		let data = [];
+		let embed = new discord.MessageEmbed();
+		embed.setAuthor(client.user.username, client.user.avatarURL(32));
 		const args = message.content
 			.slice(process.env.PREFIX.length)
 			.trim()
 			.split(/ +/);
 		if (args.length === 1) {
-			data.push("Here's a list of all my commands:");
-			data.push(command_list.map((command) => command.name).join(', '));
-			data.push(
+			embed.setTitle("Here's a list of all my commands: ");
+			command_list.forEach((command) =>
+				embed.addField(command.name, command.description, true)
+			);
+			embed.setFooter(
 				`\nYou can send \`${process.env.PREFIX}help [command name]\` to get info on a specific command!`
 			);
-			message.channel.send(data, { split: true });
+			message.channel.send(embed);
 		} else {
 			const name = args[1].toLowerCase();
 			const command = command_list.find((element) => element.name === name);
@@ -170,6 +181,14 @@ client.on('ready', () => {
 				return message.reply("that's not a valid command!");
 			}
 			data.push(`**Name:** ${command.name}`);
+			embed.setTitle(`**Name:** ${command.name}`);
+			embed.addField(`**Description:**`, `${command.description}`);
+			embed.addField(`**Arguments:**`, `${command.arguments}`);
+			embed.addField(
+				`**Usage:**`,
+				`${process.env.PREFIX}${command.name} ${command.usage}`
+			);
+
 			if (command.description)
 				data.push(`**Description:** ${command.description}`);
 			// if (command.usage)
@@ -178,7 +197,7 @@ client.on('ready', () => {
 				`**Usage:** ${process.env.PREFIX}${command.name} ${command.usage}`
 			);
 
-			message.channel.send(data, { split: true });
+			message.channel.send(embed);
 		}
 	});
 
@@ -198,69 +217,115 @@ client.on('ready', () => {
 				'Sorry you need WOLFRAM_TOKEN for this to function correctly'
 			);
 		}
+		word = 'plot ' + word;
+		let embed = new discord.MessageEmbed();
+
 		const input = encodeURIComponent(word);
 		const url = `http://api.wolframalpha.com/v2/query?input=${input}&appid=${appID}&output=json`;
-		axios(url).then((response) => {
-			const data = response.data;
-			let pods = data.queryresult.pods;
-			let img;
-			const found = pods.find((pod) => pod.id === 'Plot');
-			if (!found) {
-				const imp_plot = pods.find((pod) => pod.id === 'ImplicitPlot');
-				const plot_3d = pods.find((pod) => pod.id === '3DPlot');
-				if (imp_plot) {
-					img = imp_plot.subpods[0].img.src;
-				} else if (plot_3d) {
-					img = plot_3d.subpods[0].img.src;
-				} else {
-					message.channel.send('Please contact the bot developer');
+		embed.setTitle(`plotting ${word.slice(5)}`); // Slice because we add stuff to word
+		message.channel.send(embed).then((msg) => {
+			axios(url).then((response) => {
+				const data = response.data;
+				let pods = data.queryresult.pods;
+				let img;
+				if (!pods) {
+					embed.setTitle('Bad input, baka');
+					msg.edit(embed);
+					return;
 				}
-			} else {
-				img = found.subpods[0].img.src;
-			}
-			if (img) {
-				let embed = new discord.MessageEmbed();
-				embed.setTitle(`Equation: ${word}`).setImage(img);
-				message.channel.send(embed);
-			} else {
-				message.channel.send('There seems to be an error');
-			}
+
+				// TODO: Refactor this mess
+				const found = pods.find((pod) => pod.id === 'Plot');
+				if (!found) {
+					const imp_plot = pods.find((pod) => pod.id === 'ImplicitPlot');
+					const plot_3d = pods.find((pod) => pod.id === '3DPlot');
+					const result = pods.find((pod) => pod.id === 'Result');
+					const surface_plot = pods.find((pod) => pod.id === 'SurfacePlot');
+					const plotOfSolution = pods.find(
+						(pod) => pod.id === 'PlotOfSolutionSet'
+					);
+					if (imp_plot) {
+						img = imp_plot.subpods[0].img.src;
+					} else if (plot_3d) {
+						img = plot_3d.subpods[0].img.src;
+					} else if (result) {
+						img = result.subpods[0].img.src;
+					} else if (surface_plot) {
+						img = surface_plot.subpods[0].img.src;
+					} else if (plotOfSolution) {
+						img = plotOfSolution.subpods[0].img.src;
+					}
+				} else {
+					img = found.subpods[0].img.src;
+				}
+
+				if (img) {
+					embed.setTitle(`${word}`).setImage(img);
+					msg.edit(embed);
+				} else {
+					embed.setTitle('Bad input, baka');
+					msg.edit(embed);
+				}
+			});
 		});
 	});
 
 	nsfwCheck(client);
 
-	commands(client, 'dev', (message) => {
-		const reply = 'The devs are: Suban#8687 and nottheonetyonethguy#1864';
-		message.channel.send(reply);
-	});
-
 	commands(client, 'code', (message) => {
 		const link = 'https://github.com/IT-Club-Pulchowk/Hikana';
-		message.channel.send(link);
+		let embed = new discord.MessageEmbed().setDescription(link);
+		message.channel.send(embed);
 	});
 
 	commands(client, 'about', (message) => {
-		msg =
-			'You can read about be from https://github.com/IT-Club-Pulchowk/Hikana#about';
-		message.channel.send(msg);
+		let embed = new discord.MessageEmbed();
+		embed.setAuthor(client.user.username, client.user.avatarURL(32));
+		for (key of Object.keys(about)) {
+			embed.addField(key, about[key], true);
+		}
+		axios
+			.get(
+				'https://api.github.com/repos/IT-Club-Pulchowk/Hikana/contributors',
+				{
+					Accept: 'application/vnd.github.v3+json',
+				}
+			)
+			.then((res) => {
+				let contributors = [];
+				res.data.forEach((person) => {
+					contributors.push(person.login);
+				});
+				if (contributors.length > 0) {
+					embed.addField('Developers', contributors.join(', '));
+				}
+				message.channel.send(embed);
+			});
 	});
 
 	commands(client, 'q', (message) => {
-		const author = { id: message.author.id, name: message.author.username };
+		const author = {
+			id: message.author.id,
+			name: message.member.displayName,
+		};
 		const question = message.content.slice(2);
-		if (!question) {
+		if (!(question || message.attachments.first())) {
+			console.log('bad message');
 			return;
 		}
-
 		const embed = new discord.MessageEmbed();
 		embed
 			.setTitle(`${author.name}`)
 			.setColor(`RANDOM`)
 			.setDescription(question);
+
+		if (message.attachments.first()) {
+			embed.setImage(message.attachments.first().proxyURL);
+		}
 		const questionChannel = process.env.Q_CHANNEL;
 		const reactRequired = process.env.Q_REACT;
 		if (questionChannel) {
+			message.react('👌');
 			if (reactRequired) {
 				// There is probably a better way to do this
 				const filter = (reaction, user) => {
@@ -268,29 +333,35 @@ client.on('ready', () => {
 						.get(process.env.Q_REACT_ROLE)
 						.members.map((m) => m.user.id);
 					let modReactecd = false;
-					if (reaction.emoji.name === '✅') {
+					if (reaction.emoji.name === '👌') {
 						for (user of reaction.users.cache.keys()) {
 							if (mods.includes(user)) {
 								modReactecd = true;
+								message.react('✅');
 								break;
 							}
 						}
 					}
-					return reaction.emoji.name === '✅' && modReactecd;
+					return modReactecd;
 				};
 				const collector = message.createReactionCollector(filter, {
 					time: 60000 * 2,
 				});
 				collector.on('collect', (reaction, user) => {
 					console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
-					client.channels.cache.get(questionChannel).send(embed);
+					if (!questions_in_question_channel.includes(message.id)) {
+						client.channels.cache.get(questionChannel).send(embed);
+						questions_in_question_channel += message.id;
+					} else {
+					}
 				});
 
 				collector.on('end', (collected) => {
 					console.log(`Collected ${collected.size} items`);
-
-					if (collected.size > 0) message.react('👌');
 				});
+			} else {
+				message.react('✅');
+				client.channels.cache.get(questionChannel).send(embed);
 			}
 		} else {
 			message.reply(
@@ -304,6 +375,7 @@ client.on('ready', () => {
 	});
 
 	welcome(client);
+	whenMentioned(client);
 
 	commands(client, 'welcomeMessage', (message) => {
 		const { member } = message;
