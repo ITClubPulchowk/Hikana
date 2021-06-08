@@ -378,7 +378,12 @@ client.on('ready', () => {
 		message.channel.send('some mmsg');
 	});
 
-	welcome(client);
+	welcome(client); 
+
+	commands(client, 'join', (message) => {
+		client.emit('guildMemberAdd', message.member)
+	})
+	
 	whenMentioned(client);
 
 	commands(client, 'welcomeMessage', (message) => {
@@ -655,8 +660,10 @@ client.on('ready', () => {
 	});
 
 	commands(client, 'search', message => {
-		let data = ''
-		fs.writeFile('search.json', data, (err) => {
+		let data = {
+			"nothing": "nothing"
+		}
+		fs.writeFile('search.json', JSON.stringify(data), (err) => {
 			if (err) {
 				console.log(err);
 			}
