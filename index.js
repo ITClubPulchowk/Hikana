@@ -7,8 +7,12 @@ const nsfwCheck = require('./nsfw-check.js');
 const whenMentioned = require('./whenMentioned.js');
 const { command_list } = require('./data.js');
 const about = require('./about.json');
+const Search = require('./search.json')
 
 const talkedRecently = new Set();
+
+const Jikan = require('jikan-node')
+const mal = new Jikan()
 
 const editJsonFile = require('edit-json-file');
 const file = editJsonFile(path.join(__dirname, 'config.json'));
@@ -625,6 +629,105 @@ client.on('ready', () => {
 		}
 		
 	});
+
+	commands(client, 'anime', (message) => {
+		const embed = new discord.MessageEmbed()
+		const args = message.content.substring(process.env.length).split(' ')
+		args.shift()
+		const title = args.join(' ')
+		mal.search('anime', title).then(		
+			(res) => {
+				const result = res.results[1]
+				embed.setTitle(result.title)
+				.setURL(result.url)
+				.addField('Synopsis: ', result.synopsis)
+				.addField('Airing: ', result.airing, true)
+				.addField('Type: ', result.type, true)
+				.addField('Episodes:', result.episodes, true)
+				.setThumbnail(result.image_url)
+				.addField('Score: ', result.score, true)
+				.addField('Start Date: ', result.start_date.substring(0, 10), true)
+				.addField('End Date ', result.end_date.substring(0, 10), true)
+				.setTimestamp()
+				message.channel.send(embed)
+			})
+		.catch( (error) => console.log(error))
+	});
+
+	commands(client, 'search', message => {
+		let data = ''
+		fs.writeFile('search.json', data, (err) => {
+			if (err) {
+				console.log(err);
+			}
+		})
+		let embed = new discord.MessageEmbed()
+		let title = ''
+		let pgNo = ''
+		const args = message.content.substring(process.env.PREFIX.length).split(' ')
+		args.shift()
+		if (args.length === 1) {
+			pgNo = 1
+			title = args.join(' ')
+			console.log(pgNo, title);
+		} else {
+			pgNo = args[args.length - 1]
+			args.pop()
+			title = args.join(' ')
+			console.log(pgNo);
+		}
+		
+		mal.search('anime', title, 1).then(
+			(res) => {
+				data = JSON.stringify(res.results)
+				fs.writeFile('search.json', data, (err) => {
+					if (err) {
+						console.log(error);
+					}
+				})
+				let pgno = parseInt(pgNo)
+				if (pgno >= 5) {
+					for (let i = 40; i <= 49; i++) {
+						let result = Search[i]
+						embed.addField(`${i+1}. ${result.title}`, result.synopsis)
+						.setFooter(`Page ${i} of 5`)							
+					}
+					message.channel.send(embed)
+				} else if (pgno === 1) {
+					for (let i = 0; i <= 9; i++) {
+						result = Search[i]
+						embed.addField(`${i+1}. ${result.title}`, result.synopsis)	
+						.setFooter(`Page ${pgno} of 5`)			
+					}
+					message.channel.send(embed)
+				} else if (pgno === 2) {
+					for (let i = 10; i <= 19; i++) {
+						result = Search[i]
+						embed.addField(`${i+1}. ${result.title}`, result.synopsis)
+						.setFooter(`Page ${pgno} of 5`)				
+					}
+					message.channel.send(embed)
+				} else if (pgno === 3) {
+					for (let i = 20; i <= 29; i++) {
+						result = Search[i]
+						embed.addField(`${i+1}. ${result.title}`, result.synopsis)
+						.setFooter(`Page ${pgno} of 5`)			
+					}
+					message.channel.send(embed)
+				} else if (pgno === 4) {
+					for (let i = 30; i <= 39; i++) {
+						result = Search[i]
+						embed.addField(`${i+1}. ${result.title}`, result.synopsis)
+						.setFooter(`Page ${pgno} of 5`)		
+					}
+					message.channel.send(embed)
+				} else {
+					console.log('this is not working');
+				}
+			} 
+		).catch(err=> console.log(err))
+
+	})
 
 });
 
