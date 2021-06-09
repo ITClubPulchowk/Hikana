@@ -48,7 +48,7 @@ module.exports = (client) => {
 
 		console.log(pfp.width, pfp.height);
 
-		x = canvas.width / 2 - pfp.width / 2;
+		x = canvas.width / 2 - 128 / 2;
 		y = 25;
 
 		// Pick up the pen
@@ -66,7 +66,7 @@ module.exports = (client) => {
 		// Clip off the region you drew on
 		context.clip();
 
-		context.drawImage(pfp, x, y);
+		context.drawImage(pfp, x, y, 128, 128);
 
 		const attachment = new discord.MessageAttachment(
 			canvas.toBuffer(),
