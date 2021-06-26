@@ -1,4 +1,4 @@
-const { nsfw_words } = require('./data.js');
+const { nsfw_words } = require('./commands/data.js');
 
 module.exports = (client) => {
     client.on('message', (message)=> {

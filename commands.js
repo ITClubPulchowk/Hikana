@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { nsfw_words } = require('./data.js');
+const { nsfw_words } = require('./commands/data.js');
 
 module.exports = (client, aliases, callback) => {
 	if (typeof aliases === 'string') {
