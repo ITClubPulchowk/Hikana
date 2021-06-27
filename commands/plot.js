@@ -1,13 +1,12 @@
-require('dotenv').config()
-const axios = require('axios')
-const discord = require('discord.js')
+require('dotenv').config();
+const axios = require('axios');
 
-module.exports = (message) => {
-    const args = message.content
-			.slice(process.env.PREFIX.length)
-			.trim()
-			.split(/ +/);
-		args.shift();
+module.exports = {
+	name: 'plot',
+	args: true,
+	dontShow: false,
+	description: 'Plots something with the power of wolframalpha',
+	execute(message, args, bot) {
 		let word = args.join(' ');
 		const appID = process.env.WOLFRAM_TOKEN;
 		if (!appID) {
@@ -20,7 +19,7 @@ module.exports = (message) => {
 
 		const input = encodeURIComponent(word);
 		const url = `http://api.wolframalpha.com/v2/query?input=${input}&appid=${appID}&output=json`;
-		embed.setTitle(`plotting ${word.slice(5)}`); // Slice because we add stuff to word
+		embed.setTitle(`plotting ${word.slice(5)}`); // Slice because we added stuff to word
 		message.channel.send(embed).then((msg) => {
 			axios(url).then((response) => {
 				const data = response.data;
@@ -66,4 +65,5 @@ module.exports = (message) => {
 				}
 			});
 		});
-}
+	},
+};
