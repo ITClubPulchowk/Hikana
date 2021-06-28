@@ -99,9 +99,9 @@ module.exports = (client) => {
 		embed.attachFiles(attachment).setImage('attachment://welcome-image.png');
 		channel.send(embed);
 
-		let role = member.guild.roles.cache.find(
-			(role) => role.name === 'Participants'
-		);
-		if (role) member.roles.add(role);
+		// let role = member.guild.roles.cache.find(
+		// 	(role) => role.name === 'Participants'
+		// );
+		// if (role) member.roles.add(role);
 	});
 };

@@ -7,8 +7,9 @@ const path = require('path');
 const editJsonFile = require('edit-json-file');
 const file = editJsonFile(path.join(__dirname, 'config.json'));
 
-const nsfwCheck = require('./nsfw-check.js');
+const nsfwCheck = require('./events/nsfw-check.js');
 const welcome = require('./welcome');
+const byebye = require('./byebye');
 
 const client = new discord.Client();
 client.commands = new discord.Collection();
@@ -19,7 +20,6 @@ const commandFiles = fs
 	.filter((file) => file.endsWith('.js'));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
-
 	client.commands.set(command.name, command);
 }
 
@@ -28,6 +28,7 @@ client.once('ready', () => {
 
 	welcome(client);
 	nsfwCheck(client);
+	byebye(client);
 });
 
 client.on('message', (message) => {

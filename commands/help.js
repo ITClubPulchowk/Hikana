@@ -14,9 +14,10 @@ module.exports = {
 		embed.setAuthor(client.user.username, client.user.avatarURL(32));
 		if (!args.length) {
 			embed.setTitle("Here's a list of all my commands: ");
-			commands.forEach((command) =>
-				embed.addField(command.name, command.description, true)
-			);
+			commands.forEach((command) => {
+				if (!command.dontShow)
+					embed.addField(command.name, command.description, true);
+			});
 			embed.setFooter(
 				`\nYou can send \`${process.env.PREFIX}help [command name]\` to get info on a specific command!`
 			);

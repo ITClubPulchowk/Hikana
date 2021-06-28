@@ -2,7 +2,7 @@ const discord = require('discord.js');
 const fs = require('fs');
 const Jikan = require('jikan-node');
 const mal = new Jikan();
-const Search = require('../search.json');
+const Search = require('./search.json');
 
 module.exports = {
 	name: 'animesearch',
