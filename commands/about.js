@@ -1,11 +1,14 @@
-const About = require('../about.json')
-const axios = require('axios')
-const discord = require('discord.js')
+const About = require('../about.json');
+const axios = require('axios');
+const discord = require('discord.js');
 
-const client = new discord.Client()
-
-module.exports = (client, message) => {
-    let embed = new discord.MessageEmbed();
+module.exports = {
+	name: 'about',
+	args: false,
+	dontShow: false,
+	description: 'Gives info about the bot',
+	execute(message, args, client) {
+		let embed = new discord.MessageEmbed();
 		embed.setAuthor(client.user.username, client.user.avatarURL(32));
 		for (key of Object.keys(About)) {
 			embed.addField(key, About[key], true);
@@ -27,4 +30,5 @@ module.exports = (client, message) => {
 				}
 				message.channel.send(embed);
 			});
-}
+	},
+};

@@ -1,5 +1,11 @@
-module.exports = (message) => {
-    const { member, mentions } = message;
+module.exports = {
+	name: 'kick',
+	args: true,
+	dontShow: false,
+	usage: '<@member>',
+	description: 'Kicks user from the server',
+	execute(message, notargs, client) {
+		const { member, mentions } = message;
 
 		const tag = `<@${member.id}>`;
 
@@ -32,4 +38,5 @@ module.exports = (message) => {
 				`${tag} You do not have permission to use this command.`
 			);
 		}
-}
+	},
+};

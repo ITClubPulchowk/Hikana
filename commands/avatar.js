@@ -1,7 +1,12 @@
-const discord = require('discord.js')
-
-module.exports = (message) => {
-    const { member, mentions } = message;
+const discord = require('discord.js');
+module.exports = {
+	name: 'avatar',
+	args: false,
+	dontShow: false,
+	usage: '<@member>?',
+	description: "Returns the author's or the specified user's avatar",
+	execute(message, notArgs, client) {
+		const { member, mentions } = message;
 
 		const tag = `<@${member.id}>`;
 
@@ -69,5 +74,6 @@ module.exports = (message) => {
 					'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 				);
 			message.channel.send(embed);
-                }
-}
+		}
+	},
+};

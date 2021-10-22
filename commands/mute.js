@@ -1,7 +1,13 @@
-const discord = require('discord.js')
+const discord = require('discord.js');
 
-module.exports = (message) => {
-    const { member, mentions } = message;
+module.exports = {
+	name: 'mute',
+	args: true,
+	dontShow: false,
+	description: 'Mutes a specified user',
+	usage: '<@member>',
+	execute(message, notargs, client) {
+		const { member, mentions } = message;
 		const tag = `<@${member.id}>`;
 		const muteEmbed = new discord.MessageEmbed();
 		const muteRole = member.guild.roles.cache.find(
@@ -23,8 +29,9 @@ module.exports = (message) => {
 			if (typeof userToMute === 'string') {
 				const target = mentions.users.first();
 				if (target) {
-					const targetMember = message.guild.members.cache.get(target.id)
-					const removeRoles = message.guild.member(targetMember.user).roles.cache;
+					const targetMember = message.guild.members.cache.get(target.id);
+					const removeRoles = message.guild.member(targetMember.user).roles
+						.cache;
 					message.guild.member(targetMember.user).roles.remove(removeRoles);
 					message.guild.member(targetMember.user).roles.add(muteRole);
 					message.channel.send(`<@${targetMember.id}> was muted.`);
@@ -39,8 +46,9 @@ module.exports = (message) => {
 				} else if (!target) {
 					const targetMember = message.guild.members.cache.get(userToMute);
 					if (targetMember) {
-						const removeRoles = message.guild.member(targetMember.user).roles.cache;
-						message.guild.member(targetMember.user).roles.remove(removeRoles)
+						const removeRoles = message.guild.member(targetMember.user).roles
+							.cache;
+						message.guild.member(targetMember.user).roles.remove(removeRoles);
 						targetMember.user.roles.add(muteRole);
 						message.channel.send(`<@${targetMember.user.id} was muted>`);
 						muteEmbed
@@ -69,5 +77,5 @@ module.exports = (message) => {
 		} else {
 			return message.channel.send(`${tag} You dont't have permissions.`);
 		}
-
-}
+	},
+};

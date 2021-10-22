@@ -16,6 +16,7 @@
     "dotenv": "^9.0.2",
     "edit-json-file": "^1.6.0",
     "iconv-lite": "^0.6.3",
-    "jikan-node": "^1.2.1"
+    "jikan-node": "^1.2.1",
+		"mongodb": "^3.6.9"
   }
 }

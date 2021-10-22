@@ -1,7 +1,13 @@
-const discord = require('discord.js')
+const discord = require('discord.js');
 
-module.exports = (message) => {
-    const { member, mentions } = message;
+module.exports = {
+	name: 'unmute',
+	args: true,
+	dontShow: false,
+	description: 'Unmutes a user',
+	usage: '<@member>',
+	execute(message, args, client) {
+		const { member, mentions } = message;
 		const tag = `<@${member.id}>`;
 		const unmuteEmbed = new discord.MessageEmbed();
 		const muteRole = member.guild.roles.cache.find(
@@ -22,7 +28,7 @@ module.exports = (message) => {
 			if (typeof userToUnmute === 'string') {
 				const target = mentions.users.first();
 				if (target) {
-					const targetMember = message.guild.members.cache.get(target.id)
+					const targetMember = message.guild.members.cache.get(target.id);
 					message.guild.member(targetMember.user).roles.remove(muteRole);
 					message.channel.send(`<@${targetMember.id}> was unmuted.`);
 					unmuteEmbed
@@ -41,9 +47,7 @@ module.exports = (message) => {
 						muteEmbed
 							.setTitle('Unmute')
 							.setThumbnail(targetMember.user.displayAvatarURL())
-							.setDescription(
-								`User <@${target.id}> was unmuted`
-							)
+							.setDescription(`User <@${target.id}> was unmuted`)
 							.setFooter(`Unuted by ${message.author.tag}`)
 							.setTimestamp();
 						unmuteChannel.send(unmuteEmbed);
@@ -64,5 +68,5 @@ module.exports = (message) => {
 		} else {
 			return message.channel.send(`${tag} You dont't have permissions.`);
 		}
-
-}
+	},
+};
