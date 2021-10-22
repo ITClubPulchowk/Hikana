@@ -1,11 +1,9 @@
 require('dotenv').config();
 const discord = require('discord.js');
+const getMongoClient = require('./mongo');
 
 const fs = require('fs');
 const prefix = process.env.PREFIX;
-const path = require('path');
-const editJsonFile = require('edit-json-file');
-const file = editJsonFile(path.join(__dirname, 'config.json'));
 
 const nsfwCheck = require('./events/nsfw-check.js');
 const welcome = require('./welcome');
@@ -29,6 +27,12 @@ client.once('ready', () => {
 	welcome(client);
 	nsfwCheck(client);
 	byebye(client);
+
+	const mongoClient = getMongoClient();
+	mongoClient.connect(() => {
+		console.log('connected to db');
+		mongoClient.close();
+	});
 });
 
 client.on('message', (message) => {

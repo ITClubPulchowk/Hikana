@@ -1,5 +1,6 @@
 require('dotenv').config();
 const axios = require('axios');
+const discord = require('discord.js');
 
 module.exports = {
 	name: 'plot',

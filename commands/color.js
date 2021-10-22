@@ -1,4 +1,5 @@
 const discord = require('discord.js');
+// Needs more documentation
 module.exports = {
 	name: 'color',
 	args: true,
