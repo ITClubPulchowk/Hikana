@@ -1,6 +1,7 @@
 const discord = require('discord.js');
 const Canvas = require('canvas');
 const path = require('path');
+const getMongoClient = require('./mongo');
 
 const editJsonFile = require('edit-json-file');
 const { isDate } = require('util');
@@ -14,7 +15,7 @@ Canvas.registerFont(path.join(__dirname, '/aileron.light-italic.otf'), {
 	family: 'italic fontfamily',
 });
 
-module.exports = (client) => {
+module.exports = async (client) => {
 	client.on('guildMemberAdd', async (member) => {
 		const { guild } = member;
 		const channel = member.guild.channels.cache.find(
@@ -77,24 +78,32 @@ module.exports = (client) => {
 
 		// New memeber add
 		let embed = new discord.MessageEmbed();
-		const discordNewbie = member.guild.channels.cache.find(
-			(ch) => ch.name === 'discord-newbie'
-		);
-		const getRoles = member.guild.channels.cache.find(
-			(ch) => ch.name === 'get-roles'
-		);
-		const aboutServer = member.guild.channels.cache.find(
-			(ch) => ch.name === 'about'
-		);
-		const chat = member.guild.channels.cache.find((ch) => ch.name === 'chat');
+		// const discordNewbie = member.guild.channels.cache.find(
+		// 	(ch) => ch.name === 'discord-newbie'
+		// );
+		// const getRoles = member.guild.channels.cache.find(
+		// 	(ch) => ch.name === 'get-roles'
+		// );
+		// const aboutServer = member.guild.channels.cache.find(
+		// 	(ch) => ch.name === 'about'
+		// );
+		// const chat = member.guild.channels.cache.find((ch) => ch.name === 'chat');
+		// embed.setTitle('Welcome to C Workshop server\n');
+		// // embed.setAuthor(client.user.username, client.user.avatarURL(32));
+		// embed.setDescription(
+		// 	`If you are new to discord visit <#${discordNewbie.id}> channel and then visit <#${getRoles.id}>
+		//         Read about the server in <#${aboutServer.id}> and be sure to send your first message in <#${chat.id}>
+		//         `
+		// );
 
-		embed.setTitle('Welcome to C Workshop server\n');
-		// embed.setAuthor(client.user.username, client.user.avatarURL(32));
-		embed.setDescription(
-			`If you are new to discord visit <#${discordNewbie.id}> channel and then visit <#${getRoles.id}>
-            Read about the server in <#${aboutServer.id}> and be sure to send your first message in <#${chat.id}>
-            `
+		const titleAndDescription = await getTitleAndDescription(
+			member.guild.id,
+			member.guild.name
 		);
+
+		embed.setTitle(titleAndDescription.title);
+		// embed.setAuthor(client.user.username, client.user.avatarURL(32));
+		embed.setDescription(titleAndDescription.description);
 		embed.setFooter('💫⭐💫');
 		embed.attachFiles(attachment).setImage('attachment://welcome-image.png');
 		channel.send(embed);
@@ -105,3 +114,36 @@ module.exports = (client) => {
 		// if (role) member.roles.add(role);
 	});
 };
+
+async function getTitleAndDescription(guildID, guildName) {
+	const mongoClient = getMongoClient();
+
+	try {
+		await mongoClient.connect();
+
+		const collection = await mongoClient
+			.db('configs')
+			.collection('welcomeMessage');
+		const result = await collection.findOne({ _id: guildID });
+		titleAndDescription = {};
+
+		if (result) {
+			titleAndDescription['title'] = (await result.title)
+				? result.title
+				: 'Hello';
+			titleAndDescription['description'] = (await result.description)
+				? result.description
+				: `Welcome to ${guildName}, hope you have a nice time here`;
+		} else {
+			titleAndDescription['title'] = 'Hello';
+			titleAndDescription[
+				'description'
+			] = `Welcome to ${guildName}, hope you have a nice time here`;
+		}
+	} catch (e) {
+		console.log(e);
+	} finally {
+		await mongoClient.close();
+	}
+	return await titleAndDescription;
+}

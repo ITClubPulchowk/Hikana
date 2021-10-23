@@ -32,7 +32,9 @@ module.exports = {
 			data.push(`**Name:** ${command.name}`);
 			embed.setTitle(`**Name:** ${command.name}`);
 			embed.addField(`**Description:**`, `${command.description}`);
-			embed.addField(`**Arguments:**`, `${command.arguments}`);
+
+			if (command.args) embed.addField(`**Arguments:**`, `${command.args}`);
+
 			if (command.usage) {
 				embed.addField(
 					`**Usage:**`,
