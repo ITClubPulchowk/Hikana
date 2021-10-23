@@ -67,7 +67,7 @@ module.exports = {
 		}
 		let msg = `I pick: `;
 		for (let i = 0; i < tosend.length; i++) {
-			if (i != tosend.length) msg += `${tosend[i]}, `;
+			if (i != tosend.length - 1) msg += `${tosend[i]}, `;
 			else msg += `${tosend[i]}`;
 		}
 		message.channel.send(msg);
