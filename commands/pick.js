@@ -17,15 +17,17 @@ module.exports = {
 			);
 			return;
 		}
-		numberOfPicks = parseInt(args[0]);
+		let numberOfPicks = parseInt(args[0]);
+		let shift = true;
 		if (isNaN(numberOfPicks)) {
-			message.channel.send(
-				'The first argument must be a number \nUse **!help pick** for more info'
-			);
-			return;
+			// message.channel.send(
+			// 	'The first argument must be a number \nUse **!help pick** for more info'
+			// );
+			numberOfPicks = 1;
+			shift = false;
 		}
 
-		args.shift();
+		if (shift) args.shift();
 		tosend = [];
 
 		// Check if long pattern

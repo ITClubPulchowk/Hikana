@@ -37,9 +37,13 @@ client.once('ready', () => {
 
 client.on('message', (message) => {
 	// Check if self is mentioned
-	if (message.mentions.members.get(client.user.id)) {
-		if (!message.content.startsWith(prefix))
-			message.channel.send(`Prefix is: ${process.env.PREFIX}`);
+
+	// IDK why this check is here but this is necessary
+	if (message.mentions.memebers) {
+		if (message.mentions.members.get(client.user.id)) {
+			if (!message.content.startsWith(prefix))
+				message.channel.send(`Prefix is: ${process.env.PREFIX}`);
+		}
 	}
 
 	if (!message.content.startsWith(prefix) || message.author.bot) return;

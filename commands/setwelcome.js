@@ -2,7 +2,7 @@ const getMongoClient = require('../mongo');
 const discord = require('discord.js');
 
 module.exports = {
-	name: 'setWelcome',
+	name: 'setwelcome',
 	args: true,
 	dontShow: false,
 	description: 'Sets a welcome message',
@@ -53,8 +53,7 @@ async function showWelcomeMessage(mongoClient, guildID, returnChannel) {
 		let embed = new discord.MessageEmbed();
 		embed.setTitle('Welcome message');
 
-		if (result.title)
-			embed.addField('Title', result.title ? result.title : ' ', false);
+		if (result.title) embed.addField('Title', result.title, false);
 		if (result.description)
 			embed.addField('Description', result.description, false);
 
@@ -107,9 +106,7 @@ async function createWelcomeMessage(
 		const result = await collection.insertOne(doc);
 
 		if (result.insertedCount)
-			returnChannel.send(
-				`Welcome message ${type == 'title' ? 'title' : 'description'} created`
-			);
+			returnChannel.send(`Welcome message ${type} created`);
 		else returnChannel.send('Failed to create welcome message');
 	}
 }

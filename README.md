@@ -47,9 +47,8 @@ Q_REACT_ROLE=<some-channel-role>
 ```
 
 You can get \<wolfram-token\> by going to their website and creating a developer account. This is required for the plot feature.  
-The command "q" is used to send questions to a specific channel. For this, it required a channel id. You can get it by right clicking a text channel and then Copy ID. paste the value in the place of \<channel-id\>    
-\<react-required-bool\> is a boolean value. If set to true, a moderator must react to the message in a given time<react-time>(not implemented yet, default 2 mins) in minutes for it to reach channel set by \<channel-id\> and \<some-channel-role\> is role id of the moderator.  
-
+The command "q" is used to send questions to a specific channel. For this, it required a channel id. You can get it by right clicking a text channel and then Copy ID. paste the value in the place of \<channel-id\>  
+\<react-required-bool\> is a boolean value. If set to true, a moderator must react to the message in a given time<react-time>(not implemented yet, default 2 mins) in minutes for it to reach channel set by \<channel-id\> and \<some-channel-role\> is role id of the moderator.
 
 ### Running the application
 
@@ -86,9 +85,8 @@ node .
 
 ###### TODO
 
-- Random
 - Birthday tracker
-
+- dm
 - Clean -> copy channel features to new channel, then delete old one
 - notice
 - intro // Server intro (tsundere)
