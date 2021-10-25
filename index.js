@@ -46,6 +46,14 @@ client.on('message', (message) => {
 		}
 	}
 
+	// Happy girl gif when message is "good girl"
+	if (message.content == 'good girl') {
+		message.channel.send(
+			'https://cdn.discordapp.com/attachments/847363596815302666/901828956536324157/happy-anime-backless.gif'
+		);
+		return;
+	}
+
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);

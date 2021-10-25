@@ -3,6 +3,7 @@ module.exports = {
 	args: false,
 	dontShow: false,
 	description: 'A random number picker',
+	usage: '<number-of-picks> [<choices>]',
 	execute(message, args, client) {
 		/*
 		pick 1 5 6 ; randomly picks either 5 or 6
@@ -36,7 +37,7 @@ module.exports = {
 		const nums = re.exec(args.join(' '));
 		if (nums) {
 			const start = parseInt(nums[1]);
-			const end = parseInt(nums[2]);
+			const end = parseInt(nums[2]) + 1;
 			const arrOfRangeOfNumbers = Array.from(
 				{ length: end - start },
 				(_, i) => i + start
