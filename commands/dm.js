@@ -1,5 +1,3 @@
-const discord = require('discord.js');
-
 module.exports = {
 	name: 'dm',
 	args: true,
@@ -10,7 +8,7 @@ module.exports = {
 		const { member, mentions } = message;
 		const userMessage = args.join(' ');
 		if (member.hasPermission('ADMINISTRATOR')) {
-			const msgRe = /"(\w|\s|\d|<|!|@|>|\?|:|\*|\+|\=|\U)+"/;
+			const msgRe = /"(\w|\s|\d|<|!|@|>|\?|:|\*|\+|\=|\/|\\|\-|\.|)+"/;
 
 			const msg = msgRe.exec(args.join(' '));
 			if (!msg) {

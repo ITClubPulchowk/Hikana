@@ -6,7 +6,7 @@ module.exports = {
 	args: true,
 	dontShow: false,
 	description: 'Sets a welcome message',
-	usage: 'show || title <message> || description <message>',
+	usage: 'show | | title <message> | | description <message>',
 	async execute(message, args, client) {
 		const type = args[0];
 		args.shift();

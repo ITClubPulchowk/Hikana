@@ -8,19 +8,23 @@ module.exports = {
 	dontShow: false,
 	description: 'Plots something with the power of wolframalpha',
 	execute(message, args, bot) {
-		let word = args.join(' ');
+		let searchTerm = args.join(' ');
+		searchTerm = 'plot ' + searchTerm;
+
 		const appID = process.env.WOLFRAM_TOKEN;
 		if (!appID) {
 			message.channel.send(
 				'Sorry you need WOLFRAM_TOKEN for this to function correctly'
 			);
 		}
-		word = 'plot ' + word;
+
 		let embed = new discord.MessageEmbed();
 
-		const input = encodeURIComponent(word);
+		const input = encodeURIComponent(searchTerm);
 		const url = `http://api.wolframalpha.com/v2/query?input=${input}&appid=${appID}&output=json`;
-		embed.setTitle(`plotting ${word.slice(5)}`); // Slice because we added stuff to word
+
+		embed.setTitle(`plotting ${searchTerm.slice(5)}`); // Slice because we added stuff to word
+
 		message.channel.send(embed).then((msg) => {
 			axios(url).then((response) => {
 				const data = response.data;
@@ -58,7 +62,7 @@ module.exports = {
 				}
 
 				if (img) {
-					embed.setTitle(`${word}`).setImage(img);
+					embed.setTitle(`${searchTerm}`).setImage(img);
 					msg.edit(embed);
 				} else {
 					embed.setTitle('Bad input, baka');

@@ -8,6 +8,7 @@ const prefix = process.env.PREFIX;
 const nsfwCheck = require('./events/nsfw-check.js');
 const welcome = require('./welcome');
 const byebye = require('./byebye');
+const spamCheck = require('./events/spam-check.js');
 
 const client = new discord.Client();
 client.commands = new discord.Collection();
@@ -26,6 +27,7 @@ client.once('ready', () => {
 
 	welcome(client);
 	nsfwCheck(client);
+	spamCheck(client);
 	byebye(client);
 
 	const mongoClient = getMongoClient();

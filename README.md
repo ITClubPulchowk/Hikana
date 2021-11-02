@@ -85,8 +85,8 @@ node .
 
 ###### TODO
 
+- Removing spam
 - Birthday tracker
-- dm
 - Clean -> copy channel features to new channel, then delete old one
 - notice
 - intro // Server intro (tsundere)

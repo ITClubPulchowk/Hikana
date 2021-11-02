@@ -33,7 +33,7 @@ module.exports = (client) => {
 
 		context.fillStyle = '#ffffff';
 		context.font = '30px fontfamily';
-		let text = `Welcome ${member.user.tag}`;
+		let text = `ByeBye ${member.user.tag}`;
 		x = canvas.width / 2 - context.measureText(text).width / 2;
 		context.fillText(text, x, 60 + 128);
 
