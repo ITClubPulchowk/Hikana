@@ -1,11 +1,21 @@
 module.exports = (client) => {
 	client.on('message', (message) => {
 		const { content, member } = message;
-		const badNitroLink = '(https://dliscordl.com/nitro)';
 		const banDescription = { days: 7, reason: 'Spam link of discord nitro' };
+		const badNitroLink = ['https://dliscordl.com/nitro'];
+		const re = new RegExp(badNitroLink.join('|'), 'i');
 
-		let re = new RegExp(badNitroLink, 'i');
 		found = content.search(re);
+
+		// Ramdom Checks
+		if (content.includes('https://')) {
+			if (
+				(content.includes('discord') || content.includes('nitro')) &&
+				!content.includes('https://discord.com')
+			) {
+				found = 1;
+			}
+		}
 
 		// If found
 		if (found != -1) {
