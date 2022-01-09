@@ -1,7 +1,7 @@
 const { nsfw_words } = require('../utils/data.js');
 
 module.exports = (client) => {
-	client.on('message', (message) => {
+	client.on('messageCreate', (message) => {
 		const { content } = message;
 		// nsfw word check
 		let re = new RegExp(nsfw_words, 'i');

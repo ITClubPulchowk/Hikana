@@ -1,11 +1,14 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const discord = require('discord.js')
+
 module.exports = {
-	name: 'code',
-	args: false,
+	data: new SlashCommandBuilder()
+		.setName('code')
+		.setDescription('Gets the github link'),
 	dontShow: false,
-	description: 'Gets the github link',
-	execute(message, args, client) {
+	async execute(interaction, client) {
 		const link = 'https://github.com/IT-Club-Pulchowk/Hikana';
 		let embed = new discord.MessageEmbed().setDescription(link);
-		message.channel.send(embed);
+		interaction.reply({ embeds: [embed] });
 	},
 };

@@ -16,7 +16,6 @@ Canvas.registerFont(path.join(__dirname, '/aileron.light-italic.otf'), {
 
 module.exports = (client) => {
 	client.on('guildMemberRemove', async (member) => {
-		const { guild } = member;
 		const channel = member.guild.channels.cache.find(
 			(ch) => ch.name === 'welcome'
 		);
@@ -78,8 +77,8 @@ module.exports = (client) => {
 
 		embed.setTitle('Bye bye!');
 		embed.setFooter('💫⭐💫');
-		embed.attachFiles(attachment).setImage('attachment://welcome-image.png');
-		channel.send(embed);
+		//embed.attachFiles(attachment).setImage('attachment://welcome-image.png');
+		channel.send({embeds: [embed], files: [attachment]});
 
 		// let role = member.guild.roles.cache.find(
 		// 	(role) => role.name === 'Participants'

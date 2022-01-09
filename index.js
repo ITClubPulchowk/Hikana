@@ -3,14 +3,15 @@ const discord = require('discord.js');
 const getMongoClient = require('./mongo');
 
 const fs = require('fs');
-const prefix = process.env.PREFIX;
 
 const nsfwCheck = require('./events/nsfw-check.js');
 const welcome = require('./welcome');
 const byebye = require('./byebye');
 const spamCheck = require('./events/spam-check.js');
 
-const client = new discord.Client();
+const client = new discord.Client({
+	intents: [discord.Intents.FLAGS.GUILDS, discord.Intents.FLAGS.GUILD_MESSAGES, discord.Intents.FLAGS.GUILD_MEMBERS, discord.Intents.FLAGS.GUILD_INVITES],
+});
 client.commands = new discord.Collection();
 
 // Loads up all the commands from commands directory
@@ -19,11 +20,34 @@ const commandFiles = fs
 	.filter((file) => file.endsWith('.js'));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
+	if (command.data) {
+		client.commands.set(command.data.name, command);
+	}
 }
 
 client.once('ready', () => {
 	console.log(`Logged in as ${client.user.username}`);
+
+	const guildID = '847363596366774273';
+	const guild = client.guilds.cache.get(guildID);
+
+	let commands;
+	if (guild) {
+		commands = guild.commands;
+	} else {
+		commands = client.application.commands;
+	}
+
+	const commandFiles = fs
+		.readdirSync('./commands')
+		.filter((file) => file.endsWith('.js'));
+
+	for (const file of commandFiles) {
+		const command = require(`./commands/${file}`);
+		if (command.data) {
+			commands.create(command.data);
+		}
+	}
 
 	welcome(client);
 	nsfwCheck(client);
@@ -37,14 +61,46 @@ client.once('ready', () => {
 	});
 });
 
+// Updating to version 13
+client.on('interactionCreate', async (interaction) => {
+	if (!interaction.isCommand()) return;
+
+	const { commandName, options } = interaction;
+
+	const command = client.commands.get(commandName);
+	if (!command) return;
+	try {
+		await command.execute(interaction, client);
+	} catch (error) {
+		console.error(error);
+		return interaction.reply({
+			content: 'There was an error while executing this command!',
+			ephemeral: true,
+		});
+	}
+
+	/*
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		return interaction.reply({
+			content: 'There was an error while executing this command!',
+			ephemeral: true,
+		});
+	}
+	*/
+});
+/*
 client.on('message', (message) => {
 	// Check if self is mentioned
 
 	// IDK why this check is here but this is necessary
 	if (message.mentions.memebers) {
 		if (message.mentions.members.get(client.user.id)) {
-			if (!message.content.startsWith(prefix))
+			if (!message.content.startsWith(prefix)) {
 				message.channel.send(`Prefix is: ${process.env.PREFIX}`);
+			}
 		}
 	}
 
@@ -84,5 +140,5 @@ client.on('message', (message) => {
 		message.reply('there was an error trying to execute that command!');
 	}
 });
-
+*/
 client.login(process.env.BOT_TOKEN);

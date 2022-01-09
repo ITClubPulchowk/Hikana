@@ -1,47 +1,52 @@
 const discord = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
-	name: 'help',
-	args: false,
+	data: new SlashCommandBuilder()
+		.setName('help')
+		.setDescription('Displays the help information')
+		.addStringOption((string) =>
+			string
+				.setName('command_name')
+				.setDescription('Name of the command to be searched for')
+		),
 	dontShow: false,
-	description: 'Displays the help information',
-	usage: '<command-name?>',
-	execute(message, args, client) {
+	async execute(interaction, client) {
 		let data = [];
 		const { commands } = client;
 
 		let embed = new discord.MessageEmbed();
 		embed.setAuthor(client.user.username, client.user.avatarURL(32));
-		if (!args.length) {
+		if (!interaction.options.getString('command_name')) {
 			embed.setTitle("Here's a list of all my commands: ");
 			commands.forEach((command) => {
 				if (!command.dontShow)
-					embed.addField(command.name, command.description, true);
+					embed.addField(command.data.name, command.data.description, true);
 			});
 			embed.setFooter(
-				`\nYou can send \`${process.env.PREFIX}help [command name]\` to get info on a specific command!`
+				`\nYou can send \`/help [command name]\` to get info on a specific command!`
 			);
-			message.channel.send(embed);
+			interaction.reply({ embeds: [embed] });
 		} else {
-			const name = args[0].toLowerCase();
-			const command = commands.find((element) => element.name === name);
+			const name = interaction.options.getString('command_name');
+			const command = commands.find((element) => element.data.name === name);
 
 			if (!command) {
-				return message.reply("that's not a valid command!");
-			}
-			data.push(`**Name:** ${command.name}`);
-			embed.setTitle(`**Name:** ${command.name}`);
-			embed.addField(`**Description:**`, `${command.description}`);
-
-			if (command.args) embed.addField(`**Arguments:**`, `${command.args}`);
-
-			if (command.usage) {
-				embed.addField(
-					`**Usage:**`,
-					`${process.env.PREFIX}${command.name} ${command.usage}`
+				return interaction.reply(
+					"that's not a valid command! If you want this to be a valid command, please contact a developer with a feature request"
 				);
 			}
-			message.channel.send(embed);
+			data.push(`**Name:** ${command.data.name}`);
+			embed.setTitle(`**Name:** ${command.data.name}`);
+			embed.addField(`**Description:**`, `${command.data.description}`);
+			console.log(command.data);
+			command.data.options.forEach((option) => {
+				embed.addField(
+					`**Argument ${option.name}:**`,
+					`${option.description}.${option.required ? '** Required**' : ''} `
+				);
+			});
+			interaction.reply({ embeds: [embed] });
 		}
 	},
 };

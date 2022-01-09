@@ -1,42 +1,44 @@
+const discord = require("discord.js");
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
 module.exports = {
-	name: 'kick',
-	args: true,
-	dontShow: false,
-	usage: '<@member>',
-	description: 'Kicks user from the server',
-	execute(message, notargs, client) {
-		const { member, mentions } = message;
+  data: new SlashCommandBuilder()
+    .setName("kick")
+    .setDescription("Kicks number of the server")
+    .addMentionableOption((mention) =>
+      mention
+        .setName("mention")
+        .setDescription("User whom to kick")
+        .setRequired(true)
+    )
+    .addStringOption((string) =>
+      string
+        .setName("reason")
+        .setDescription("Reason for kick")
+        .setRequired(false)
+    ),
+  dontShow: false,
+  async execute(interaction) {
+    let reason = interaction.options.getString("reason");
+		reason = reason ? reason:  "bad boi"
 
-		const tag = `<@${member.id}>`;
-
-		if (
-			member.hasPermission('ADMINISTRATOR') ||
-			member.hasPermission('KICK_MEMBERS')
-		) {
-			const args = message.content
-				.substring(process.env.PREFIX.length)
-				.split(' ');
-			args.shift();
-			const userToKick = args[0];
-			console.log(userToKick);
-			if (typeof userToKick === 'string') {
-				const target = mentions.users.first();
-				if (target) {
-					const targetMember = message.guild.members.cache.get(target.id);
-					targetMember.kick();
-					message.channel.send(`${tag} That user was kicked`);
-				} else if (!target) {
-					const targetMember = message.guild.members.cache.get(userToKick);
-					targetMember.kick();
-					message.channel.send(`<@${userToKick}> That user was kicked`);
-				}
-			} else if (typeof userToKick === 'undefined') {
-				message.channel.send(`${tag} Please specify someone to kick.`);
-			}
-		} else {
-			message.channel.send(
-				`${tag} You do not have permission to use this command.`
-			);
-		}
-	},
+    const guildMemeber = await interaction.guild.members.fetch(
+      interaction.user.id
+    );
+    if (
+      guildMemeber.permissions.has("ADMINISTRATOR") ||
+      guildMemeber.permissions.has("KICK_MEMBERS")
+    ) {
+      target = interaction.options.getMentionable("mention");
+      if (target.user) {
+        target
+          .kick(reason)
+          .then(() => interaction.reply(`Kicked user: ${target.user.username}. Reason: ${reason}`));
+      } else {
+        interaction.reply("Cound not find the user");
+      }
+    } else {
+      interaction.reply("Not enough perms peasent");
+    }
+  },
 };

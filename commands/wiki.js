@@ -1,15 +1,22 @@
 const axios = require('axios');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
-	name: 'wiki',
-	args: true,
+	data: new SlashCommandBuilder()
+		.setName('wiki')
+		.setDescription('Searches wikipidia')
+		.addStringOption((string) => {
+			return string
+				.setName('search_string')
+				.setDescription('String to searc the wiki')
+				.setRequired(true);
+		}),
 	dontShow: false,
-	description: 'Gives you a wiki link on the topic',
-	execute(message, args, bot) {
-		const searchWord = args.join(' ');
+	async execute(interaction, client) {
+		const searchWord = interaction.options.getString('search_string');
 		const params = {
 			action: 'opensearch',
-			search: word,
+			search: searchWord,
 			limit: '1',
 			namespace: '0',
 			format: 'json',
@@ -26,9 +33,10 @@ module.exports = {
 				url += '&' + key + '=' + params[key];
 			});
 
-			axios(url).then((response) => {
-				message.channel.send(response.data[3]);
-			});
+			response = await axios(url);
+			if (await response) {
+				await interaction.reply({ content: response.data[3][0] });
+			} else await interaction.reply({ content: 'Search Failed' });
 		}
 	},
 };

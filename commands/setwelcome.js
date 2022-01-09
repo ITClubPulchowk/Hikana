@@ -1,5 +1,18 @@
 const getMongoClient = require('../mongo');
 const discord = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
+/*
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('sewelcome')
+		.setDescription('Sets the welcome message'),
+	dontShow: false,
+	async execute(interaction, client) {
+
+	},
+};
+*/
 
 module.exports = {
 	name: 'setwelcome',

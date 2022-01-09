@@ -1,40 +1,32 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
 module.exports = {
-	name: 'pick',
-	args: false,
+	data: new SlashCommandBuilder()
+		.setName('pick')
+		.setDescription('A random number picker')
+		.addIntegerOption((integer) =>
+			integer
+				.setName('num_of_picks')
+				.setDescription('Number of items to pick from **choices**')
+				.setRequired(true)
+		)
+		.addStringOption((string) =>
+			string
+				.setName('choices')
+				.setDescription('Choices separated by spaces')
+				.setRequired(true)
+		),
 	dontShow: false,
-	description: 'A random number picker',
-	usage: '<number-of-picks> [<choices>]',
-	execute(message, args, client) {
-		/*
-		pick 1 5 6 ; randomly picks either 5 or 6
-		pick 2 5 6 ; returns 5 and 6
-		pick 2 a b c d; randomly picks any three
-		pick 2 [-7 25]; picks 2 numbers between -7 and 25 randomly
-		*/
+	async execute(interaction, client) {
+		let numberOfPicks = interaction.options.getInteger('num_of_picks');
 
-		if (args.length < 1) {
-			message.channel.send(
-				'Insuffient Arguemnts BAKA \nUse **!help pick** for more info'
-			);
-			return;
-		}
-		let numberOfPicks = parseInt(args[0]);
-		let shift = true;
-		if (isNaN(numberOfPicks)) {
-			// message.channel.send(
-			// 	'The first argument must be a number \nUse **!help pick** for more info'
-			// );
-			numberOfPicks = 1;
-			shift = false;
-		}
-
-		if (shift) args.shift();
 		tosend = [];
+		let pickOptions = interaction.options.getString('choices').split(' ');
 
 		// Check if long pattern
 		// [-4, 1] like pattern
 		const re = /\[(-?\d+)\s?,\s?(-?\d+)\]/;
-		const nums = re.exec(args.join(' '));
+		const nums = re.exec(pickOptions.join(' '));
 		if (nums) {
 			const start = parseInt(nums[1]);
 			const end = parseInt(nums[2]) + 1;
@@ -57,13 +49,14 @@ module.exports = {
 				numberOfPicks--;
 			}
 		} else {
-			while (args.length != 0 && numberOfPicks != 0) {
-				const randomElement = args[Math.floor(Math.random() * args.length)];
+			while (pickOptions.length != 0 && numberOfPicks != 0) {
+				const randomElement =
+					pickOptions[Math.floor(Math.random() * pickOptions.length)];
 				tosend.push(randomElement);
 
-				const index = args.indexOf(randomElement);
+				const index = pickOptions.indexOf(randomElement);
 				if (index > -1) {
-					args.splice(index, 1);
+					pickOptions.splice(index, 1);
 				}
 				numberOfPicks--;
 			}
@@ -73,6 +66,6 @@ module.exports = {
 			if (i != tosend.length - 1) msg += `${tosend[i]}, `;
 			else msg += `${tosend[i]}`;
 		}
-		message.channel.send(msg);
+		interaction.reply(msg);
 	},
 };

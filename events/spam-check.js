@@ -1,5 +1,5 @@
 module.exports = (client) => {
-	client.on('message', (message) => {
+	client.on('messageCreate', (message) => {
 		const { content, member } = message;
 		const banDescription = { days: 7, reason: 'Spam link of discord nitro' };
 		const badNitroLink = ['https://dliscordl.com/nitro'];
