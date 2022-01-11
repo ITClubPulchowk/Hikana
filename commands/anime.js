@@ -23,10 +23,8 @@ module.exports = {
     interaction.deferReply();
     mal
       .search("anime", title)
-      .then((res) => {
+      .then((res, ) => {
         const result = res.results[1];
-        console.log(result);
-        console.log("here");
         embed
           .setTitle(result.title)
           .setURL(result.url)

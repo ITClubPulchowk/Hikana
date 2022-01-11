@@ -47,7 +47,6 @@ module.exports = async (client) => {
       member.user.displayAvatarURL({ format: "png" })
     );
 
-    console.log(pfp.width, pfp.height);
 
     x = canvas.width / 2 - 128 / 2;
     y = 25;
@@ -106,7 +105,8 @@ module.exports = async (client) => {
     embed.setDescription(titleAndDescription.description);
     embed.setFooter("💫⭐💫");
     //embed.attachFiles(attachment).setImage("attachment://welcome-image.png");
-    channel.send({ embeds: [embed], files: [attachment] });
+    embed.setImage("attachment://welcome-image.png");
+    channel.send({ embeds: [embed] , files: [attachment]});
 
     // let role = member.guild.roles.cache.find(
     // 	(role) => role.name === 'Participants'
@@ -126,7 +126,6 @@ async function getTitleAndDescription(guildID, guildName) {
       .collection("welcomeMessage");
     const result = await collection.findOne({ _id: guildID });
     titleAndDescription = {};
-    console.log(result);
 
     if (result) {
       titleAndDescription["title"] = (await result.title)

@@ -1,4 +1,5 @@
-const About = require('../about.json');
+const About = require("../about.json")
+
 const axios = require('axios');
 const discord = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');

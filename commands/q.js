@@ -1,4 +1,5 @@
 const discord = require('discord.js');
+// TODO GOTTA REFACTOR THIS
 
 let questions_in_question_channel = [];
 module.exports = {

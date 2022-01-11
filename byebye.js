@@ -78,6 +78,7 @@ module.exports = (client) => {
 		embed.setTitle('Bye bye!');
 		embed.setFooter('💫⭐💫');
 		//embed.attachFiles(attachment).setImage('attachment://welcome-image.png');
+		embed.setImage('attachment://welcome-image.png');
 		channel.send({embeds: [embed], files: [attachment]});
 
 		// let role = member.guild.roles.cache.find(

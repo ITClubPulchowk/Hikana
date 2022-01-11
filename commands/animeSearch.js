@@ -1,96 +1,70 @@
-const discord = require('discord.js');
-const fs = require('fs');
-const Jikan = require('jikan-node');
+const fs = require("fs");
+const Jikan = require("jikan-node");
 const mal = new Jikan();
-const Search = require('./search.json');
+
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const discord = require("discord.js");
 
 module.exports = {
-	name: 'animesearch',
-	args: true,
-	dontShow: false,
-	description: 'Searches a anime',
-	usage: '<search-term>',
-	execute(message, notArgs, client) {
-		let data = {
-			nothing: 'nothing',
-		};
-		fs.writeFile('search.json', JSON.stringify(data), (err) => {
-			if (err) {
-				console.log(err);
-			}
-		});
-		let embed = new discord.MessageEmbed();
-		let title = '';
-		let pgNo = '';
-		const args = message.content
-			.substring(process.env.PREFIX.length)
-			.split(' ');
-		args.shift();
-		if (args.length === 1) {
-			pgNo = 1;
-			title = args.join(' ');
-			console.log(pgNo, title);
-		} else {
-			pgNo = args[args.length - 1];
-			args.pop();
-			title = args.join(' ');
-			console.log(pgNo, title);
-		}
+  data: new SlashCommandBuilder()
+    .setName("animesearch")
+    .setDescription("Searches a anime")
+    .addStringOption((string) =>
+      string.setName("title").setDescription("Anime title").setRequired(true)
+    )
+    .addIntegerOption((number) =>
+      number.setName("pg-num").setDescription("Page Number").setRequired(false)
+    ),
 
-		mal
-			.search('anime', title, 1)
-			.then((res) => {
-				data = JSON.stringify(res.results);
-				fs.writeFile('search.json', data, (err) => {
-					if (err) {
-						console.log(error);
-					}
-				});
-				let pgno = parseInt(pgNo);
-				if (pgno >= 5) {
-					for (let i = 40; i <= 49; i++) {
-						let result = Search[i];
-						embed
-							.addField(`${i + 1}. ${result.title}`, result.synopsis)
-							.setFooter(`Page ${i} of 5`);
-					}
-					message.channel.send(embed);
-				} else if (pgno === 1) {
-					for (let i = 0; i <= 9; i++) {
-						result = Search[i];
-						embed
-							.addField(`${i + 1}. ${result.title}`, result.synopsis)
-							.setFooter(`Page ${pgno} of 5`);
-					}
-					message.channel.send(embed);
-				} else if (pgno === 2) {
-					for (let i = 10; i <= 19; i++) {
-						result = Search[i];
-						embed
-							.addField(`${i + 1}. ${result.title}`, result.synopsis)
-							.setFooter(`Page ${pgno} of 5`);
-					}
-					message.channel.send(embed);
-				} else if (pgno === 3) {
-					for (let i = 20; i <= 29; i++) {
-						result = Search[i];
-						embed
-							.addField(`${i + 1}. ${result.title}`, result.synopsis)
-							.setFooter(`Page ${pgno} of 5`);
-					}
-					message.channel.send(embed);
-				} else if (pgno === 4) {
-					for (let i = 30; i <= 39; i++) {
-						result = Search[i];
-						embed
-							.addField(`${i + 1}. ${result.title}`, result.synopsis)
-							.setFooter(`Page ${pgno} of 5`);
-					}
-					message.channel.send(embed);
-				} else {
-					console.log('this is not working');
-				}
-			})
-			.catch((err) => console.log(err));
-	},
+  dontShow: false,
+  async execute(interaction, client) {
+    let embed = new discord.MessageEmbed();
+    let title = interaction.options.getString("title");
+    let pgNo = 1;
+    if (interaction.options.getInteger("pg-num"))
+      pgNo = interaction.options.getInteger("pg-num");
+    if (pgNo < 1) pgNo = 1;
+    if (pgNo > 4) pgNo = 5;
+
+    // Special case for Ashish dai
+    forAshishDai = [
+      "bleach",
+      "Kuzu  no honkai",
+      "tokyo ghoul",
+      "mirai nikki",
+      "another",
+      "wonder egg priority",
+      "school days",
+    ];
+
+    if (interaction.user.id == "350940972668157952") {
+      let pick = Math.floor(Math.random() * 10);
+      if (pick == 0) return;
+
+      pick = Math.floor(Math.random() * 10);
+      if (pick < 8 || title == 'oregairu') {
+        const AshishDaiKoFavAnime =
+          forAshishDai[Math.floor(Math.random() * forAshishDai.length)];
+        title = AshishDaiKoFavAnime;
+      }
+    }
+
+    mal
+      .search("anime", title, 1)
+      .then((res) => {
+        const startPos = (pgNo - 1) * 10;
+        const endPos = startPos + 10;
+        //console.log(res.results);
+        console.log(res.results.length);
+
+        for (let i = startPos; i < endPos; i++) {
+          const result = res.results[i];
+          if (result.synopsis.length > 0)
+            embed.addField(`${i + 1}. ${result.title}`, result.synopsis);
+        }
+        embed.setFooter(`Page ${pgNo} of 5`);
+        interaction.reply({ embeds: [embed] });
+      })
+      .catch((err) => console.log(err));
+  },
 };
