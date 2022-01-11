@@ -110,7 +110,6 @@ module.exports = {
   },
 };
 
-
 async function showWelcomeMessage(mongoClient, guildID, returnChannel) {
   const collection = await mongoClient
     .db("configs")

@@ -39,7 +39,6 @@ module.exports = {
 			data.push(`**Name:** ${command.data.name}`);
 			embed.setTitle(`**Name:** ${command.data.name}`);
 			embed.addField(`**Description:**`, `${command.data.description}`);
-			console.log(command.data);
 			command.data.options.forEach((option) => {
 				embed.addField(
 					`**Argument ${option.name}:**`,

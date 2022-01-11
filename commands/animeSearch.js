@@ -54,8 +54,6 @@ module.exports = {
       .then((res) => {
         const startPos = (pgNo - 1) * 10;
         const endPos = startPos + 10;
-        //console.log(res.results);
-        console.log(res.results.length);
 
         for (let i = startPos; i < endPos; i++) {
           const result = res.results[i];

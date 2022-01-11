@@ -45,7 +45,6 @@ module.exports = (client) => {
 			member.user.displayAvatarURL({ format: 'png' })
 		);
 
-		console.log(pfp.width, pfp.height);
 
 		x = canvas.width / 2 - 128 / 2;
 		y = 25;
