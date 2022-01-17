@@ -84,12 +84,13 @@ node .
 - **Mental/Emotional Weaknesses**: _She thinks too much about the future and always in a morbid sense. That is why she has gotten the alias hikana._
 
 ###### TODO
+- role manager
 
-- Removing spam
+
 - Birthday tracker
 - Clean -> copy channel features to new channel, then delete old one
+
 - notice
 - intro // Server intro (tsundere)
 - permission setup
 - archive / archive catagory
-- osu

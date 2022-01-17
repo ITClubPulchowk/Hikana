@@ -1,96 +1,100 @@
-require('dotenv').config();
-const discord = require('discord.js');
-const getMongoClient = require('./mongo');
+require("dotenv").config();
+const discord = require("discord.js");
+const getMongoClient = require("./mongo");
 
-const fs = require('fs');
+const fs = require("fs");
 
-const nsfwCheck = require('./events/nsfw-check.js');
-const welcome = require('./welcome');
-const byebye = require('./byebye');
-const spamCheck = require('./events/spam-check.js');
+const nsfwCheck = require("./events/nsfw-check.js");
+const welcome = require("./welcome");
+const byebye = require("./byebye");
+const spamCheck = require("./events/spam-check.js");
 
 const client = new discord.Client({
-	intents: [discord.Intents.FLAGS.GUILDS, discord.Intents.FLAGS.GUILD_MESSAGES, discord.Intents.FLAGS.GUILD_MEMBERS, discord.Intents.FLAGS.GUILD_INVITES],
+  intents: [
+    discord.Intents.FLAGS.GUILDS,
+    discord.Intents.FLAGS.GUILD_MESSAGES,
+    discord.Intents.FLAGS.GUILD_MEMBERS,
+    discord.Intents.FLAGS.GUILD_INVITES,
+  ],
 });
 client.commands = new discord.Collection();
 
 // Loads up all the commands from commands directory
 const commandFiles = fs
-	.readdirSync('./commands')
-	.filter((file) => file.endsWith('.js'));
+  .readdirSync("./commands")
+  .filter((file) => file.endsWith(".js"));
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-	if (command.data) {
-		client.commands.set(command.data.name, command);
-	}
+  const command = require(`./commands/${file}`);
+  if (command.data) {
+    client.commands.set(command.data.name, command);
+  }
 }
 
-client.once('ready', () => {
-	console.log(`Logged in as ${client.user.username}`);
+client.once("ready", () => {
+  console.log(`Logged in as ${client.user.username}`);
 
-	const guildID = '847363596366774273';
-	const guild = client.guilds.cache.get(guildID);
+  const guildID = "847363596366774273";
+  const guild = client.guilds.cache.get(guildID);
 
-	let commands;
-	if (guild) {
-		commands = guild.commands;
-	} else {
-		commands = client.application.commands;
-	}
+  let commands;
+  if (guild) {
+    commands = guild.commands;
+  } else {
+    commands = client.application.commands;
+  }
 
-	const commandFiles = fs
-		.readdirSync('./commands')
-		.filter((file) => file.endsWith('.js'));
+  const commandFiles = fs
+    .readdirSync("./commands")
+    .filter((file) => file.endsWith(".js"));
 
-	for (const file of commandFiles) {
-		const command = require(`./commands/${file}`);
-		if (command.data) {
-			commands.create(command.data);
-		}
-	}
+  for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    if (command.data) {
+      commands.create(command.data);
+			console.log(`Registered Command: ${command.data.name}`)
+    }
+  }
 
-	welcome(client);
-	nsfwCheck(client);
-	spamCheck(client);
-	byebye(client);
+  welcome(client);
+  nsfwCheck(client);
+  spamCheck(client);
+  byebye(client);
 
-	const mongoClient = getMongoClient();
-	mongoClient.connect(() => {
-		console.log('connected to db');
-		mongoClient.close();
-	});
+  const mongoClient = getMongoClient();
+  mongoClient.connect(() => {
+    console.log("connected to db");
+    mongoClient.close();
+  });
 });
 
 // Updating to version 13
-client.on('interactionCreate', async (interaction) => {
-	if (!interaction.isCommand()) return;
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isCommand()) return;
 
-	const { commandName, options } = interaction;
+  const { commandName, options } = interaction;
 
-	const command = client.commands.get(commandName);
-	if (!command) return;
-	try {
-		await command.execute(interaction, client);
-	} catch (error) {
-		console.error(error);
-		return interaction.reply({
-			content: 'There was an error while executing this command!',
-			ephemeral: true,
-		});
-	}
-
-	/*
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		return interaction.reply({
-			content: 'There was an error while executing this command!',
-			ephemeral: true,
-		});
-	}
-	*/
+  const command = client.commands.get(commandName);
+  if (!command) return;
+  try {
+    await command.execute(interaction, client);
+  } catch (error) {
+    console.error(error);
+    return interaction.reply({
+      content: "There was an error while executing this command!",
+      ephemeral: true,
+    });
+  }
 });
+
+client.on("messageCreate", async (interaction) => {
+  if (interaction.content == 'good girl' || interaction.content == 'good bot') {
+		interaction.channel.send(
+			'https://cdn.discordapp.com/attachments/847363596815302666/901828956536324157/happy-anime-backless.gif'
+		);
+		return;
+	}
+});
+
 /*
 client.on('message', (message) => {
 	// Check if self is mentioned
