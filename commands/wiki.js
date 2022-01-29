@@ -13,6 +13,7 @@ module.exports = {
     }),
   dontShow: false,
   async execute(interaction, client) {
+    await interaction.deferReply();
     const searchWord = interaction.options.getString("search_string");
     const params = {
       action: "opensearch",
@@ -35,8 +36,8 @@ module.exports = {
 
       response = await axios(url);
       if (await response) {
-        await interaction.reply({ content: response.data[3][0] || 'Article not found' });
-      } else await interaction.reply({ content: "Search Failed" });
+        await interaction.editReply({ content: response.data[3][0] || 'Article not found' });
+      } else await interaction.editReply({ content: "Search Failed" });
     }
   },
 };

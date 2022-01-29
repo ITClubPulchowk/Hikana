@@ -32,7 +32,7 @@ module.exports = {
 
 		// embed.setTitle(`plotting ${searchTerm.slice(5)}`); // Slice because we added stuff to word
 
-		interaction.deferReply();
+		await interaction.deferReply();
 
 		response = await axios(url);
 		const data = response.data;
@@ -69,10 +69,10 @@ module.exports = {
 
 		if (img) {
 			embed.setTitle(`${searchTerm}`).setImage(img);
-			interaction.editReply({ embeds: [embed] });
+			await interaction.editReply({ embeds: [embed] });
 		} else {
 			embed.setTitle('Bad input, baka');
-			interaction.edit({ embeds: [embed] });
+			await interaction.edit({ embeds: [embed] });
 		}
 	},
 };

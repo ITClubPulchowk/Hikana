@@ -18,6 +18,7 @@ module.exports = {
 
   dontShow: false,
   async execute(interaction, client) {
+    await interaction.deferReply();
     let embed = new discord.MessageEmbed();
     let title = interaction.options.getString("title");
     let pgNo = 1;
@@ -37,12 +38,12 @@ module.exports = {
       "school days",
     ];
 
-    if (interaction.user.id == "350940972668157952") {
+    if (interaction.user.id == "746302084718264381") {
       let pick = Math.floor(Math.random() * 10);
       if (pick == 0) return;
 
       pick = Math.floor(Math.random() * 10);
-      if (pick < 8 || title == 'oregairu') {
+      if (pick < 8 || title == "oregairu") {
         const AshishDaiKoFavAnime =
           forAshishDai[Math.floor(Math.random() * forAshishDai.length)];
         title = AshishDaiKoFavAnime;
@@ -61,8 +62,11 @@ module.exports = {
             embed.addField(`${i + 1}. ${result.title}`, result.synopsis);
         }
         embed.setFooter(`Page ${pgNo} of 5`);
-        interaction.reply({ embeds: [embed] });
+         interaction.editReply({ embeds: [embed] });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+         interaction.editReply(`Error. Could not find ${title}`);
+        console.log(err);
+      });
   },
 };

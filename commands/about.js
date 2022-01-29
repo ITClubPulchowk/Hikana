@@ -12,13 +12,13 @@ module.exports = {
 	dontShow: false,
 	async execute(interaction, client) {
 		let embed = new discord.MessageEmbed();
+    await interaction.deferReply();
 		embed.setAuthor(client.user.username, client.user.avatarURL(32));
 		embed.setColor('#0099ff');
 		for (key of Object.keys(About)) {
 			embed.addField(key, About[key], true);
 		}
 
-		interaction.deferReply();
 		const contributorsString = await getContributors();
 		embed.addField('Developers', contributorsString);
 

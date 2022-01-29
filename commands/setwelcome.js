@@ -3,37 +3,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const getMongoClient = require("../mongo");
 
 module.exports = {
-  /*
-  data: new SlashCommandBuilder()
-    .setName("setwelcome")
-    .setDescription("Sets the welcome message")
-    .addSubcommand((command) =>
-      command.setName("show").setDescription("Shows the current state")
-    )
-    .addSubcommand((command) =>
-      command
-        .setName("title")
-        .setDescription("Allows to change the title")
-        .addStringOption((string) =>
-          string
-            .setName("new-title")
-            .setDescription("The new title")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((command) =>
-      command
-        .setName("description")
-        .setDescription("Allows to change the description")
-        .addStringOption((message) =>
-          message
-            .setName("new-description")
-            .setDescription("The new description")
-            .setRequired(true)
-        )
-    ),
-    */
-  data: {
+ data: {
     name: "setwelcome",
     description: "Sets the welcome message",
     perms: "MANAGE_GUILD",
@@ -81,7 +51,7 @@ module.exports = {
     let userMessage = "";
 
     const mongoClient = getMongoClient();
-    interaction.deferReply();
+    await interaction.deferReply();
     try {
       await mongoClient.connect();
       if (type == "show")
@@ -125,9 +95,9 @@ async function showWelcomeMessage(mongoClient, guildID, returnChannel) {
     if (result.description)
       embed.addField("Description", result.description, false);
 
-    returnChannel.editReply({ embeds: [embed] });
+    await returnChannel.editReply({ embeds: [embed] });
   } else {
-    returnChannel.editReply("Message not set");
+    await returnChannel.editReply("Message not set");
   }
 }
 

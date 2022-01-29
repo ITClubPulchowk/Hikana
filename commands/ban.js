@@ -41,6 +41,8 @@ module.exports = {
       } else {
         interaction.reply("Cound not find the user");
       }
+    } else {
+      interaction.reply("Not enough perms peasent");
     }
   },
 };
