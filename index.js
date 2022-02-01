@@ -17,6 +17,10 @@ const client = new discord.Client({
     discord.Intents.FLAGS.GUILD_INVITES,
   ],
 });
+
+client.login(process.env.BOT_TOKEN).then(() => {
+  client.application.commands.set([]);
+});
 client.commands = new discord.Collection();
 
 // Loads up all the commands from commands directory
@@ -31,9 +35,10 @@ for (const file of commandFiles) {
 }
 
 client.once("ready", () => {
+  client.application.commands.set([]);
   console.log(`Logged in as ${client.user.username}`);
 
-  const guildID = "847363596366774273";
+  const guildID = "";
   const guild = client.guilds.cache.get(guildID);
 
   let commands;
@@ -51,7 +56,7 @@ client.once("ready", () => {
     const command = require(`./commands/${file}`);
     if (command.data) {
       commands.create(command.data);
-			console.log(`Registered Command: ${command.data.name}`)
+      console.log(`Registered Command: ${command.data.name}`);
     }
   }
 
@@ -87,62 +92,21 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 client.on("messageCreate", async (interaction) => {
-  if (interaction.content == 'good girl' || interaction.content == 'good bot') {
-		interaction.channel.send(
-			'https://cdn.discordapp.com/attachments/847363596815302666/901828956536324157/happy-anime-backless.gif'
-		);
-		return;
-	}
+  if (interaction.content == "good girl" || interaction.content == "good bot") {
+    console.log(interaction);
+    interaction.channel.send(
+      "https://cdn.discordapp.com/attachments/847363596815302666/901828956536324157/happy-anime-backless.gif"
+    );
+    return;
+  }
+  if (interaction.author) {
+    if (interaction.author.id == "350940972668157952") {
+      const id = interaction.id;
+      const msg = await interaction.channel.messages.fetch(id);
+      const reactionEmoji = msg.guild.emojis.cache.find(
+        (emoji) => emoji.name === "python"
+      );
+      if (reactionEmoji) msg.react(reactionEmoji);
+    }
+  }
 });
-
-/*
-client.on('message', (message) => {
-	// Check if self is mentioned
-
-	// IDK why this check is here but this is necessary
-	if (message.mentions.memebers) {
-		if (message.mentions.members.get(client.user.id)) {
-			if (!message.content.startsWith(prefix)) {
-				message.channel.send(`Prefix is: ${process.env.PREFIX}`);
-			}
-		}
-	}
-
-	// Happy girl gif when message is "good girl"
-	if (message.content == 'good girl') {
-		message.channel.send(
-			'https://cdn.discordapp.com/attachments/847363596815302666/901828956536324157/happy-anime-backless.gif'
-		);
-		return;
-	}
-
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
-
-	const args = message.content.slice(prefix.length).trim().split(/ +/);
-	const command_name = args.shift().toLowerCase();
-
-	if (!client.commands.has(command_name)) {
-		message.channel.send(
-			`Hmm I dont seem to have this command, ${message.author}, type ${prefix}help to get a list of the commands`
-		);
-		message.channel.send(
-			'You can post about it in feature request if you want the feature to be added'
-		);
-		return;
-	}
-	const command = client.commands.get(command_name);
-	if (command.args && !args.length) {
-		return message.channel.send(
-			`You forgot the arguments ${message.author}, baka!`
-		);
-	}
-
-	try {
-		command.execute(message, args, client);
-	} catch (error) {
-		console.error(error);
-		message.reply('there was an error trying to execute that command!');
-	}
-});
-*/
-client.login(process.env.BOT_TOKEN);

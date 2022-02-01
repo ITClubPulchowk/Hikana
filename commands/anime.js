@@ -30,12 +30,12 @@ module.exports = {
       "school days",
     ];
 
-    if (interaction.user.id == "746302084718264381") {
+    if (interaction.user.id == "350940972668157952") {
       let pick = Math.floor(Math.random() * 10);
       if (pick == 0) return;
 
       pick = Math.floor(Math.random() * 10);
-      if (pick < 8 || title == "oregairu") {
+      if (pick < 8 || title == "oregairu" || title == "hibike") {
         const AshishDaiKoFavAnime =
           forAshishDai[Math.floor(Math.random() * forAshishDai.length)];
         title = AshishDaiKoFavAnime;
